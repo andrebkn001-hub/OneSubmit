@@ -1,4 +1,4 @@
- <?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->dropColumn('nama');
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('bidang', ['Information Management', 'Business Intelligence', 'Data Engineering', 'Information Retrieval'])->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->string('nama')->after('user_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('bidang');
         });
     }
 };

@@ -33,7 +33,7 @@ Route::get('/dashboard', function () {
             return redirect()->route('admin.dashboard');
         case 'ketua_jurusan':
             return redirect()->route('jurusan.dashboard');
-        case 'ketua_kjfd':
+        case 'dosen_kjfd':
             return redirect()->route('kjfd.dashboard');
         case 'mahasiswa':
             return redirect()->route('mahasiswa.dashboard');
@@ -83,6 +83,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 
     // Lihat status proposal
     Route::get('/status', [ProposalController::class, 'status'])->name('status');
+
+    // Update proposal untuk revisi
+    Route::post('/proposal/update/{id}', [ProposalController::class, 'update'])->name('proposal.update');
 });
 // ==========================
 // KETUA JURUSAN ROUTES
@@ -95,9 +98,12 @@ Route::middleware(['auth', 'role:ketua_jurusan'])->prefix('jurusan')->name('juru
 // ==========================
 // KETUA KJFD ROUTES
 // ==========================
-Route::middleware(['auth', 'role:ketua_kjfd'])->prefix('kjfd')->name('kjfd.')->group(function () {
-    Route::get('/dashboard', fn() => view('kjfd.dashboard'))->name('dashboard');
-    // Tambahkan route lain untuk ketua kjfd di sini
+Route::middleware(['auth', 'role:dosen_kjfd'])->prefix('kjfd')->name('kjfd.')->group(function () {
+    Route::get('/dashboard', fn() => view('dashboard.kjfd'))->name('dashboard');
+    Route::get('/proposals', [\App\Http\Controllers\DosenKjfdProposalController::class, 'index'])->name('proposals.index');
+    Route::post('/proposals/{id}/approve', [\App\Http\Controllers\DosenKjfdProposalController::class, 'approve'])->name('proposals.approve');
+    Route::post('/proposals/{id}/revise', [\App\Http\Controllers\DosenKjfdProposalController::class, 'revise'])->name('proposals.revise');
+    Route::post('/proposals/{id}/reject', [\App\Http\Controllers\DosenKjfdProposalController::class, 'reject'])->name('proposals.reject');
 });
 
 

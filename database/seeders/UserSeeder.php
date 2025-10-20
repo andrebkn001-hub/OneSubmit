@@ -25,10 +25,35 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Ketua KJFD',
-            'email' => 'kjfd@onesubmit.com',
+            'name' => 'KJFD Information Management',
+            'email' => 'kjfd_im@onesubmit.com',
             'password' => Hash::make('kjfd123'),
-            'role' => 'ketua_kjfd',
+            'role' => 'dosen_kjfd',
+            'bidang' => 'Information Management',
+        ]);
+
+        User::create([
+            'name' => 'KJFD Business Intelligence',
+            'email' => 'kjfd_bi@onesubmit.com',
+            'password' => Hash::make('kjfd123'),
+            'role' => 'dosen_kjfd',
+            'bidang' => 'Business Intelligence',
+        ]);
+
+        User::create([
+            'name' => 'KJFD Data Engineering',
+            'email' => 'kjfd_de@onesubmit.com',
+            'password' => Hash::make('kjfd123'),
+            'role' => 'dosen_kjfd',
+            'bidang' => 'Data Engineering',
+        ]);
+
+        User::create([
+            'name' => 'KJFD Information Retrieval',
+            'email' => 'kjfd_ir@onesubmit.com',
+            'password' => Hash::make('kjfd123'),
+            'role' => 'dosen_kjfd',
+            'bidang' => 'Information Retrieval',
         ]);
 
         User::create([

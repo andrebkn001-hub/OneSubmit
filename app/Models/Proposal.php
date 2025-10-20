@@ -17,10 +17,18 @@ class Proposal extends Model
         'bidang_minat',
         'file_path',
         'status',
+        'dosen_kjfd_id',
+        'revision_message',
+        'rejection_message',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function dosenKjfd()
+    {
+        return $this->belongsTo(User::class, 'dosen_kjfd_id');
     }
 }

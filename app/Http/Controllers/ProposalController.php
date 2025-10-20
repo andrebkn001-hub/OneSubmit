@@ -4,43 +4,49 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Proposal;
+use Illuminate\Support\Facades\Auth;
 
 class ProposalController extends Controller
 {
-    // 🟢 Menyimpan proposal baru
+    // Tampilkan form pengajuan proposal
+    public function create()
+    {
+        return view('proposals.create');
+    }
+
+    // Simpan proposal ke database
     public function store(Request $request)
     {
         $request->validate([
-            'nim' => 'required|string',
-            'judul_proposal' => 'required|string',
-            'bidang_minat' => 'required|string',
-            'file_proposal' => 'required|mimes:pdf,doc,docx|max:2048',
+            'nim' => 'required|string|max:20',
+            'judul' => 'required|string|max:255',
+            'bidang_minat' => 'required|string|max:100',
+            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
-        // Simpan file ke storage/public/proposals
-        $filePath = $request->file('file_proposal')->store('proposals', 'public');
+        // Upload file proposal
+        $file = $request->file('file_proposal');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('proposals', $fileName, 'public');
 
-        // Simpan data ke database
+        // Simpan ke database
         Proposal::create([
-            'user_id' => auth()->id(),
-            'nama_lengkap' => auth()->user()->name,
+            'user_id' => Auth::id(),
+            'nama_lengkap' => Auth::user()->name,
             'nim' => $request->nim,
-            'judul_proposal' => $request->judul_proposal,
+            'judul' => $request->judul,
             'bidang_minat' => $request->bidang_minat,
-            'file_proposal' => $filePath,
-            'status' => 'Menunggu Validasi',
+            'file_path' => $filePath,
+            'status' => 'Menunggu Verifikasi',
         ]);
 
-        return redirect()->back()->with('success', 'Proposal berhasil diajukan!');
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Proposal berhasil dikirim!');
     }
 
-    // 🟣 Menampilkan status proposal mahasiswa
+    // Tampilkan status proposal mahasiswa
     public function status()
     {
-        // Ambil semua proposal milik user yang sedang login
-        $proposals = Proposal::where('user_id', auth()->id())->get();
-
-        // Kirim data ke view mahasiswa.status
-        return view('mahasiswa.status', compact('proposals'));
+        $proposals = Proposal::where('user_id', Auth::id())->get();
+        return view('proposals.status', compact('proposals'));
     }
 }

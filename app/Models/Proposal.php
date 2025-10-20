@@ -13,9 +13,9 @@ class Proposal extends Model
         'user_id',
         'nama_lengkap',
         'nim',
-        'judul_proposal',
+        'judul',
         'bidang_minat',
-        'file_proposal',
+        'file_path',
         'status',
     ];
 

@@ -74,10 +74,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // ==========================
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', fn() => view('mahasiswa.dashboard'))->name('dashboard');
-    Route::get('/status', [ProposalController::class, 'status'])->name('status');
-    Route::post('/proposal/store', [ProposalController::class, 'store'])->name('proposal.store');
-});
+    
+    // Form pengajuan proposal
+    Route::get('/proposal/create', [ProposalController::class, 'create'])->name('proposal.create');
 
+    // Submit proposal
+    Route::post('/proposal/store', [ProposalController::class, 'store'])->name('proposal.store');
+
+    // Lihat status proposal
+    Route::get('/status', [ProposalController::class, 'status'])->name('status');
+});
 // ==========================
 // KETUA JURUSAN ROUTES
 // ==========================

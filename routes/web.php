@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\AdminProposalController; // Dipindahkan ke atas
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| Semua route utama aplikasi OneSubmit.
+| Diatur berdasarkan role agar mudah dipelihara.
 |
 */
 
@@ -18,37 +19,81 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Dashboard Utama Berdasarkan Role
+|--------------------------------------------------------------------------
+*/
 Route::get('/dashboard', function () {
     $user = auth()->user();
 
+    // Mengarahkan pengguna ke dashboard yang sesuai dengan role mereka
     switch ($user->role) {
         case 'admin':
-            return view('dashboard.admin');
+            return redirect()->route('admin.dashboard');
         case 'ketua_jurusan':
-            return view('dashboard.ketua_jurusan');
+            return redirect()->route('jurusan.dashboard');
         case 'ketua_kjfd':
-            return view('dashboard.ketua_kjfd');
+            return redirect()->route('kjfd.dashboard');
         case 'mahasiswa':
-            return view('dashboard.mahasiswa');
+            return redirect()->route('mahasiswa.dashboard');
         default:
             abort(403, 'Role tidak dikenal');
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+/*
+|--------------------------------------------------------------------------
+| Route Umum (Profil Pengguna)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Route Spesifik Berdasarkan Role
+|--------------------------------------------------------------------------
+*/
 
-// 💡 Tambahkan bagian ini
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', fn() => view('dashboard.admin'))->name('admin.dashboard');
-    Route::get('/jurusan/dashboard', fn() => view('dashboard.jurusan'))->name('jurusan.dashboard');
-    Route::get('/kjfd/dashboard', fn() => view('dashboard.kjfd'))->name('kjfd.dashboard');
-    Route::get('/mahasiswa/dashboard', fn() => view('dashboard.mahasiswa'))->name('mahasiswa.dashboard');
+// ==========================
+// ADMIN ROUTES
+// ==========================
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+    Route::get('/proposals', [AdminProposalController::class, 'index'])->name('proposals.index');
+    Route::post('/proposals/{id}/approve', [AdminProposalController::class, 'approve'])->name('proposals.approve');
+    Route::post('/proposals/{id}/reject', [AdminProposalController::class, 'reject'])->name('proposals.reject');
 });
 
+// ==========================
+// MAHASISWA ROUTES
+// ==========================
+Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    Route::get('/dashboard', fn() => view('mahasiswa.dashboard'))->name('dashboard');
+    Route::get('/status', [ProposalController::class, 'status'])->name('status');
+    Route::post('/proposal/store', [ProposalController::class, 'store'])->name('proposal.store');
+});
+
+// ==========================
+// KETUA JURUSAN ROUTES
+// ==========================
+Route::middleware(['auth', 'role:ketua_jurusan'])->prefix('jurusan')->name('jurusan.')->group(function () {
+    Route::get('/dashboard', fn() => view('jurusan.dashboard'))->name('dashboard');
+    // Tambahkan route lain untuk ketua jurusan di sini
+});
+
+// ==========================
+// KETUA KJFD ROUTES
+// ==========================
+Route::middleware(['auth', 'role:ketua_kjfd'])->prefix('kjfd')->name('kjfd.')->group(function () {
+    Route::get('/dashboard', fn() => view('kjfd.dashboard'))->name('dashboard');
+    // Tambahkan route lain untuk ketua kjfd di sini
+});
+
+
+// Route untuk otentikasi
 require __DIR__.'/auth.php';

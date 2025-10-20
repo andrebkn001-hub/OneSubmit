@@ -1,6 +1,6 @@
-    <?php
-
-    namespace Database\Seeders;
+<?php namespace Database\Seeders; 
+// ... sisa file
+// ... sisa file
 
     // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
     use Illuminate\Database\Seeder;

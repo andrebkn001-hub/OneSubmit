@@ -3,17 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proposal;
+use App\Services\ProposalService;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class DosenKjfdProposalController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        private ProposalService $proposalService
+    ) {
         $this->middleware(['auth', 'role:dosen_kjfd']);
     }
 
-    public function index(Request $request)
+    /**
+     * Display proposals assigned to this dosen KJFD.
+     */
+    public function index(Request $request): View
     {
         $query = Proposal::where('dosen_kjfd_id', Auth::id())
                          ->where('status', 'menunggu verifikasi dosen kjfd');
@@ -26,52 +33,83 @@ class DosenKjfdProposalController extends Controller
         return view('dosen_kjfd.proposals.index', compact('proposals'));
     }
 
-    public function approve($id)
+    /**
+     * Approve proposal.
+     */
+    public function approve(int $id): RedirectResponse
     {
-        $proposal = Proposal::findOrFail($id);
-        if ($proposal->dosen_kjfd_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menyetujui proposal ini.');
+        try {
+            $proposal = Proposal::findOrFail($id);
+
+            if (!$this->proposalService->dosenKjfdAssignedToProposal($proposal, Auth::id())) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menyetujui proposal ini.');
+            }
+
+            $this->proposalService->updateProposal($proposal, [
+                'status' => 'disetujui',
+            ]);
+
+            return redirect()->back()->with('success', 'Proposal berhasil disetujui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyetujui proposal. Silakan coba lagi.');
         }
-
-        $proposal->status = 'disetujui';
-        $proposal->save();
-
-        return redirect()->back()->with('success', 'Proposal berhasil disetujui.');
     }
 
-    public function revise(Request $request, $id)
+    /**
+     * Send proposal for revision with message.
+     */
+    public function revise(Request $request, int $id): RedirectResponse
     {
-        $request->validate([
-            'revision_message' => 'required|string|min:10',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'revision_message' => 'required|string|min:10|max:1000',
+            ]);
 
-        $proposal = Proposal::findOrFail($id);
-        if ($proposal->dosen_kjfd_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk merevisi proposal ini.');
+            $proposal = Proposal::findOrFail($id);
+
+            if (!$this->proposalService->dosenKjfdAssignedToProposal($proposal, Auth::id())) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk merevisi proposal ini.');
+            }
+
+            $this->proposalService->updateProposal($proposal, [
+                'status' => 'revisi',
+                'revision_message' => $validatedData['revision_message'],
+            ]);
+
+            return redirect()->back()->with('success', 'Proposal berhasil direvisi. Pesan revisi telah dikirim ke mahasiswa.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat merevisi proposal. Silakan coba lagi.');
         }
-
-        $proposal->status = 'revisi';
-        $proposal->revision_message = $request->revision_message;
-        $proposal->save();
-
-        return redirect()->back()->with('success', 'Proposal berhasil direvisi. Pesan revisi telah dikirim ke mahasiswa.');
     }
 
-    public function reject(Request $request, $id)
+    /**
+     * Reject proposal with rejection message.
+     */
+    public function reject(Request $request, int $id): RedirectResponse
     {
-        $request->validate([
-            'rejection_message' => 'required|string|min:10',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'rejection_message' => 'required|string|min:10|max:1000',
+            ]);
 
-        $proposal = Proposal::findOrFail($id);
-        if ($proposal->dosen_kjfd_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menolak proposal ini.');
+            $proposal = Proposal::findOrFail($id);
+
+            if (!$this->proposalService->dosenKjfdAssignedToProposal($proposal, Auth::id())) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menolak proposal ini.');
+            }
+
+            $this->proposalService->updateProposal($proposal, [
+                'status' => 'ditolak',
+                'rejection_message' => $validatedData['rejection_message'],
+            ]);
+
+            return redirect()->back()->with('error', 'Proposal berhasil ditolak dengan alasan: ' . $validatedData['rejection_message']);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat menolak proposal. Silakan coba lagi.');
         }
-
-        $proposal->status = 'ditolak';
-        $proposal->rejection_message = $request->rejection_message;
-        $proposal->save();
-
-        return redirect()->back()->with('error', 'Proposal berhasil ditolak dengan alasan: ' . $request->rejection_message);
     }
 }

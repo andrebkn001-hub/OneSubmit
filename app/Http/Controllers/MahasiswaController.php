@@ -1,46 +1,75 @@
+<?php
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Proposal;
+use App\Services\ProposalService;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class MahasiswaController extends Controller
 {
-    public function dashboard()
+    public function __construct(
+        private ProposalService $proposalService
+    ) {}
+
+    /**
+     * Display the mahasiswa dashboard.
+     */
+    public function dashboard(): View
     {
         return view('mahasiswa.dashboard');
     }
 
-    public function storeProposal(Request $request)
+    /**
+     * Store a new proposal.
+     */
+    public function storeProposal(Request $request): RedirectResponse
     {
-        $request->validate([
-            'nama_lengkap' => 'required|string',
-            'nim' => 'required|string',
-            'judul_proposal' => 'required|string',
-            'bidang_minat' => 'required|string',
-            'file_proposal' => 'nullable|mimes:pdf,doc,docx|max:2048',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'nama_lengkap' => 'required|string|max:255',
+                'nim' => 'required|string|max:20',
+                'judul' => 'required|string|max:255',
+                'bidang_minat' => 'required|string|max:100',
+                'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            ]);
 
-        $filePath = null;
-        if ($request->hasFile('file_proposal')) {
-            $filePath = $request->file('file_proposal')->store('proposals', 'public');
+            $filePath = $this->proposalService->uploadProposalFile($request);
+
+            $this->proposalService->createProposal([
+                'user_id' => Auth::id(),
+                'nama_lengkap' => $validatedData['nama_lengkap'],
+                'nim' => $validatedData['nim'],
+                'judul' => $validatedData['judul'],
+                'bidang_minat' => $validatedData['bidang_minat'],
+                'file_path' => $filePath,
+                'status' => 'menunggu verifikasi',
+            ]);
+
+            return redirect()->route('mahasiswa.status')->with('success', 'Proposal berhasil diajukan!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat mengajukan proposal. Silakan coba lagi.');
         }
-
-        Proposal::create([
-            'user_id' => Auth::id(),
-            'nama_lengkap' => $request->nama_lengkap,
-            'nim' => $request->nim,
-            'judul_proposal' => $request->judul_proposal,
-            'bidang_minat' => $request->bidang_minat,
-            'file_proposal' => $filePath,
-        ]);
-
-        return redirect()->route('mahasiswa.status')->with('success', 'Proposal berhasil diajukan!');
     }
 
-    public function status()
+    /**
+     * Display proposal status for the authenticated mahasiswa.
+     */
+    public function status(Request $request): View
     {
-        $proposals = Proposal::where('user_id', Auth::id())->get();
+        $query = Proposal::where('user_id', Auth::id());
+
+        if ($request->has('nim') && !empty($request->nim)) {
+            $query->where('nim', 'like', '%' . $request->nim . '%');
+        }
+
+        $proposals = $query->latest()->get();
+
         return view('mahasiswa.status', compact('proposals'));
     }
 }

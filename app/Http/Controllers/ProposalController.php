@@ -2,49 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Proposal;
+use App\Services\ProposalService;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class ProposalController extends Controller
 {
-    // Tampilkan form pengajuan proposal
-    public function create()
+    public function __construct(
+        private ProposalService $proposalService
+    ) {}
+
+    /**
+     * Display the proposal creation form.
+     */
+    public function create(): View
     {
         return view('proposals.create');
     }
 
-    // Simpan proposal ke database
-    public function store(Request $request)
+    /**
+     * Store a new proposal.
+     */
+    public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'nim' => 'required|string|max:20',
-            'judul' => 'required|string|max:255',
-            'bidang_minat' => 'required|string|max:100',
-            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:2048',
-        ]);
+        try {
+            $this->proposalService->validateProposalData($request);
 
-        // Upload file proposal
-        $file = $request->file('file_proposal');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('proposals', $fileName, 'public');
+            $filePath = $this->proposalService->uploadProposalFile($request);
 
-        // Simpan ke database
-        Proposal::create([
-            'user_id' => Auth::id(),
-            'nama_lengkap' => Auth::user()->name,
-            'nim' => $request->nim,
-            'judul' => $request->judul,
-            'bidang_minat' => $request->bidang_minat,
-            'file_path' => $filePath,
-            'status' => 'menunggu verifikasi',
-        ]);
+            $this->proposalService->createProposal([
+                'user_id' => Auth::id(),
+                'nama_lengkap' => Auth::user()->name,
+                'nim' => $request->nim,
+                'judul' => $request->judul,
+                'bidang_minat' => $request->bidang_minat,
+                'file_path' => $filePath,
+                'status' => 'menunggu verifikasi',
+            ]);
 
-        return redirect()->route('mahasiswa.dashboard')->with('success', 'Proposal berhasil dikirim!');
+            return redirect()->route('mahasiswa.dashboard')->with('success', 'Proposal berhasil dikirim!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat mengirim proposal. Silakan coba lagi.');
+        }
     }
 
-    // Tampilkan status proposal mahasiswa
-    public function status(Request $request)
+    /**
+     * Display proposal status for the authenticated user.
+     */
+    public function status(Request $request): View
     {
         $query = Proposal::where('user_id', Auth::id());
 
@@ -52,36 +62,40 @@ class ProposalController extends Controller
             $query->where('nim', 'like', '%' . $request->nim . '%');
         }
 
-        $proposals = $query->get();
+        $proposals = $query->latest()->get();
         return view('proposals.status', compact('proposals'));
     }
 
-    // Update proposal untuk revisi (upload ulang)
-    public function update(Request $request, $id)
+    /**
+     * Update proposal for revision (re-upload).
+     */
+    public function update(Request $request, int $id): RedirectResponse
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'bidang_minat' => 'required|string|max:100',
-            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:2048',
-        ]);
+        try {
+            $this->proposalService->validateProposalData($request, true);
 
-        $proposal = Proposal::findOrFail($id);
-        if ($proposal->user_id !== Auth::id() || $proposal->status !== 'revisi') {
-            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate proposal ini.');
+            $proposal = Proposal::findOrFail($id);
+
+            if (!$this->proposalService->userOwnsProposal($proposal, Auth::id()) ||
+                !$this->proposalService->isProposalInRevision($proposal)) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate proposal ini.');
+            }
+
+            $filePath = $this->proposalService->uploadProposalFile($request);
+
+            $this->proposalService->updateProposal($proposal, [
+                'judul' => $request->judul,
+                'bidang_minat' => $request->bidang_minat,
+                'file_path' => $filePath,
+                'status' => 'menunggu verifikasi',
+                'revision_message' => null,
+            ]);
+
+            return redirect()->route('mahasiswa.status')->with('success', 'Proposal berhasil diupdate dan dikirim ulang untuk verifikasi.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat mengupdate proposal. Silakan coba lagi.');
         }
-
-        // Upload file baru
-        $file = $request->file('file_proposal');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('proposals', $fileName, 'public');
-
-        $proposal->judul = $request->judul;
-        $proposal->bidang_minat = $request->bidang_minat;
-        $proposal->file_path = $filePath;
-        $proposal->status = 'menunggu verifikasi'; // Reset status setelah upload ulang
-        $proposal->revision_message = null; // Clear revision message
-        $proposal->save();
-
-        return redirect()->route('mahasiswa.status')->with('success', 'Proposal berhasil diupdate dan dikirim ulang untuk verifikasi.');
     }
 }

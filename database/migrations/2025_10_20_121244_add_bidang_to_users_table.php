@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('bidang', ['Information Management', 'Business Intelligence', 'Data Engineering', 'Information Retrieval'])->nullable();
+            $table->string('bidang', 100)->nullable();
         });
     }
 

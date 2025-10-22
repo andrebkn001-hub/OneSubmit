@@ -91,8 +91,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 // KETUA JURUSAN ROUTES
 // ==========================
 Route::middleware(['auth', 'role:ketua_jurusan'])->prefix('jurusan')->name('jurusan.')->group(function () {
-    Route::get('/dashboard', fn() => view('jurusan.dashboard'))->name('dashboard');
-    // Tambahkan route lain untuk ketua jurusan di sini
+    Route::get('/dashboard', fn() => view('dashboard.jurusan'))->name('dashboard');
+    Route::get('/proposals/kjfd', [App\Http\Controllers\JurusanController::class, 'kjfdSelection'])->name('proposals.kjfd');
+    Route::get('/proposals/{bidang}', [App\Http\Controllers\JurusanController::class, 'proposalsIndex'])->name('proposals.index');
 });
 
 // ==========================

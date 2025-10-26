@@ -22,8 +22,15 @@ class DosenKjfdProposalController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Proposal::where('dosen_kjfd_id', Auth::id())
-                         ->where('status', 'menunggu verifikasi dosen kjfd');
+        $query = Proposal::where('dosen_kjfd_id', Auth::id());
+
+        // Filter berdasarkan status jika ada
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        } else {
+            // Default: tampilkan yang perlu diverifikasi atau dalam proses
+            $query->whereIn('status', ['menunggu verifikasi dosen kjfd', 'revisi']);
+        }
 
         if ($request->has('nim') && !empty($request->nim)) {
             $query->where('nim', 'like', '%' . $request->nim . '%');

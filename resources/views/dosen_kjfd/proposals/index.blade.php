@@ -1,4 +1,4 @@
-@extends('layouts.admin') {{-- Assuming dosen_kjfd uses admin layout or a similar one --}}
+@extends('layouts.app')
 
 @section('content')
 <div class="container mt-4">
@@ -12,13 +12,28 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <!-- Form Pencarian -->
+    <!-- Form Pencarian dan Filter -->
     <form method="GET" action="{{ route('kjfd.proposals.index') }}" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="nim" class="form-control" placeholder="Cari berdasarkan NIM..." value="{{ request('nim') }}">
-            <button class="btn btn-primary" type="submit">Cari</button>
-            @if(request('nim'))
-                <a href="{{ route('kjfd.proposals.index') }}" class="btn btn-secondary">Reset</a>
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="nim" class="form-control" placeholder="Cari berdasarkan NIM..." value="{{ request('nim') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-control">
+                    <option value="">Semua Status</option>
+                    <option value="menunggu verifikasi dosen kjfd" {{ request('status') == 'menunggu verifikasi dosen kjfd' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                    <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>Revisi</option>
+                    <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                    <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" type="submit">Cari</button>
+            </div>
+            @if(request('nim') || request('status'))
+                <div class="col-md-2">
+                    <a href="{{ route('kjfd.proposals.index') }}" class="btn btn-secondary w-100">Reset</a>
+                </div>
             @endif
         </div>
     </form>
@@ -59,12 +74,16 @@
                         @endif
                     </td>
                     <td>
-                        <form action="{{ route('kjfd.proposals.approve', $proposal->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-success btn-sm">Terima</button>
-                        </form>
-                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#reviseModal{{ $proposal->id }}">Revisi</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $proposal->id }}">Tolak</button>
+                        @if($proposal->status === 'menunggu verifikasi dosen kjfd' || $proposal->status === 'revisi')
+                            <form action="{{ route('kjfd.proposals.approve', $proposal->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Terima</button>
+                            </form>
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#reviseModal{{ $proposal->id }}">Revisi</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $proposal->id }}">Tolak</button>
+                        @else
+                            <span class="text-muted">Sudah diproses</span>
+                        @endif
 
                         <!-- Revisi Modal -->
                         <div class="modal fade" id="reviseModal{{ $proposal->id }}" tabindex="-1" aria-labelledby="reviseModalLabel{{ $proposal->id }}" aria-hidden="true">

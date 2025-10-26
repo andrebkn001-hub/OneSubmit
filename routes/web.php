@@ -86,6 +86,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 
     // Update proposal untuk revisi
     Route::post('/proposal/update/{id}', [ProposalController::class, 'update'])->name('proposal.update');
+
+    // Download surat pemberitahuan
+    Route::get('/proposal/download-surat/{id}', [ProposalController::class, 'downloadSurat'])->name('proposal.download-surat');
 });
 // ==========================
 // KETUA JURUSAN ROUTES

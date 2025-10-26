@@ -19,6 +19,7 @@
             left: 0;
             top: 0;
             padding-top: 60px;
+            z-index: 999;
         }
         .sidebar a {
             color: white;
@@ -31,7 +32,8 @@
         }
         .content {
             margin-left: 250px;
-            padding: 40px;
+            padding: 20px;
+            min-height: 100vh;
         }
         .navbar {
             position: fixed;
@@ -40,9 +42,53 @@
         }
         main {
             margin-left: 250px;
-            margin-top: 100px; /* ✅ Tambahkan jarak dari navbar biar tidak kepotong */
+            margin-top: 100px;
             padding: 20px;
             width: calc(100% - 250px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 0;
+                display: none;
+            }
+            .sidebar.show {
+                display: block;
+            }
+            .content, main {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+            .navbar-toggler {
+                display: block;
+            }
+            .sidebar-toggle {
+                display: none;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .navbar-toggler {
+                display: none;
+            }
+        }
+
+        .navbar-toggler {
+            border: none;
+            background: none;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .card {
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -50,6 +96,9 @@
     <!-- Navbar atas -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
+            <button class="navbar-toggler d-md-none" type="button" onclick="toggleSidebar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <a class="navbar-brand fw-bold" href="#">OneSubmit</a>
             <div class="d-flex">
                 <form method="POST" action="{{ route('logout') }}">
@@ -92,5 +141,20 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            if (!sidebar.contains(event.target) && !navbarToggler.contains(event.target) && window.innerWidth <= 768) {
+                sidebar.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>

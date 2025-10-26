@@ -1,29 +1,58 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2 class="mb-4">Status Proposal Saya</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Status Proposal Saya</h2>
 
-    {{-- ✅ Pesan sukses jika ada --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+            {{-- ✅ Pesan sukses jika ada --}}
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
 
-    {{-- ✅ Jika belum ada proposal --}}
-    @if($proposals->isEmpty())
-        <div class="alert alert-info">Kamu belum mengajukan proposal.</div>
-    @else
-        <!-- Form Pencarian -->
-        <form method="GET" action="{{ route('mahasiswa.status') }}" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="nim" class="form-control" placeholder="Cari berdasarkan NIM..." value="{{ request('nim') }}">
-                <button class="btn btn-primary" type="submit">Cari</button>
-                @if(request('nim'))
-                    <a href="{{ route('mahasiswa.status') }}" class="btn btn-secondary">Reset</a>
-                @endif
-            </div>
-        </form>
-        <table class="table table-bordered table-striped align-middle">
+            {{-- ✅ Jika belum ada proposal --}}
+            @if($proposals->isEmpty())
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <h5>Kamu belum mengajukan proposal.</h5>
+                    <p>Silakan ajukan proposal baru untuk memulai proses.</p>
+                    <a href="{{ route('mahasiswa.proposal.create') }}" class="btn btn-primary">Ajukan Proposal Sekarang</a>
+                </div>
+            @else
+                <!-- Form Pencarian -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="GET" action="{{ route('mahasiswa.status') }}" class="row g-3">
+                            <div class="col-12 col-md-8">
+                                <label for="nim" class="form-label">Cari berdasarkan NIM</label>
+                                <input type="text" id="nim" name="nim" class="form-control" placeholder="Masukkan NIM..." value="{{ request('nim') }}">
+                            </div>
+                            <div class="col-12 col-md-4 d-flex align-items-end">
+                                <button class="btn btn-primary me-2" type="submit">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                                @if(request('nim'))
+                                    <a href="{{ route('mahasiswa.status') }}" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> Reset
+                                    </a>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Daftar Proposal</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0">
             <thead class="table-primary">
                 <tr>
                     <th>NIM</th>
@@ -91,6 +120,12 @@
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal{{ $proposal->id }}">
                                     Upload Revisi
                                 </button>
+                            @elseif (strtolower($proposal->status) == 'menunggu verifikasi dosen kjfd')
+                                <span class="badge bg-info">Menunggu Verifikasi Dosen KJFD</span>
+                            @elseif (strtolower($proposal->status) == 'disetujui')
+                                <a href="{{ route('mahasiswa.proposal.download-surat', $proposal->id) }}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-download"></i> Download Surat
+                                </a>
                             @else
                                 <span class="text-muted">-</span>
                             @endif
@@ -104,7 +139,7 @@
                                         <h5 class="modal-title" id="uploadModalLabel{{ $proposal->id }}">Upload Revisi Proposal: {{ $proposal->judul }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('proposal.update', $proposal->id) }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('mahasiswa.proposal.update', $proposal->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="modal-body">
                                             <div class="mb-3">
@@ -173,7 +208,15 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
-    @endif
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
 </div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 @endsection

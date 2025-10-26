@@ -84,7 +84,7 @@ class ProposalControllerTest extends TestCase
         $request = new Request();
         $response = $this->controller->status($request);
 
-        $this->assertEquals('proposals.status', $response->getName());
+        $this->assertEquals('mahasiswa.status', $response->getName());
         $this->assertCount(3, $response->getData()['proposals']);
     }
 

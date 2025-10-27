@@ -1,29 +1,49 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
+@extends('layouts.app') 
+
+@section('content')
+    <div class="container-fluid">
+        
+        {{-- Header Page --}}
+        <h2 class="fw-bold mb-4 text-center">
+            Kelola Profil
         </h2>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
+        {{-- Baris untuk Konten Profil --}}
+        <div class="row">
+            
+            {{-- KOLOM PEMBUNGKUS: col-md-8 mx-auto (Rata Tengah) --}}
+            <div class="col-md-8 mx-auto">
+                
+                {{-- Bagian Update Profil Information --}}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold">
+                        Informasi Profil
+                    </div>
+                    <div class="card-body">
+                        @include('profile.partials.update-profile-information-form')
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
+                {{-- Bagian Update Password --}}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold">
+                        Perbarui Kata Sandi
+                    </div>
+                    <div class="card-body">
+                        @include('profile.partials.update-password-form')
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
+                {{-- Bagian Delete User --}}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold">
+                        Hapus Akun
+                    </div>
+                    <div class="card-body">
+                        @include('profile.partials.delete-user-form')
+                    </div>
                 </div>
-            </div>
+            </div> {{-- Akhir dari col-md-8 mx-auto --}}
         </div>
     </div>
-</x-app-layout>
+@endsection

@@ -7,6 +7,7 @@ use App\Services\ProposalService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage; // <<< DITAMBAHKAN: Diperlukan untuk mengirim file
 
 class AdminProposalController extends Controller
 {
@@ -76,5 +77,27 @@ class AdminProposalController extends Controller
                 ->withInput()
                 ->with('error', 'Terjadi kesalahan saat menolak proposal. Silakan coba lagi.');
         }
+    }
+
+    // 🚀 FUNGSI BARU UNTUK MENGATASI ERROR 404 (Lihat File)
+    /**
+     * View/Download file proposal untuk role Admin.
+     */
+    public function viewFile(int $id)
+    {
+        $proposal = Proposal::findOrFail($id);
+
+        // Otorisasi: Cek keberadaan file saja, karena Admin memiliki akses penuh
+        $filePath = $proposal->file_path;
+
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
+            return abort(404, 'Berkas proposal tidak ditemukan di sistem penyimpanan.');
+        }
+
+        // Mengirimkan respons file ke browser
+        return Storage::disk('public')->response($filePath, $proposal->judul . '.pdf', [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $proposal->judul . '.pdf"'
+        ]);
     }
 }

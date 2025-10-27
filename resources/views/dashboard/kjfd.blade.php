@@ -1,67 +1,95 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid"> 
+
     <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">Dashboard Dosen KJFD</h1>
-            <p class="mb-4">Selamat datang, <strong>{{ Auth::user()->name }}</strong></p>
+        <div class="col-12 text-center"> {{-- Rata Tengah Judul --}}
+            <h1 class="mb-2">Dashboard Dosen KJFD</h1>
+            <p class="lead text-secondary mb-4">Selamat datang, <strong>{{ Auth::user()->name }}</strong></p>
         </div>
     </div>
 
-    <div class="row">
-        <!-- Card untuk Proposal Menunggu Verifikasi -->
-        <div class="col-md-4 mb-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Proposal Menunggu Verifikasi</h5>
+    {{-- BARIS 1: Proposal Menunggu Verifikasi & Proposal Disetujui --}}
+    {{-- Tambahkan d-flex untuk menyamakan tinggi card di baris ini --}}
+    <div class="row **d-flex** justify-content-center">
+        
+        {{-- Card 1: Menunggu Verifikasi --}}
+        <div class="col-lg-5 col-md-6 mb-4">
+            {{-- Tambahkan h-100 dan d-flex flex-column --}}
+            <div class="card bg-primary text-white h-100 d-flex flex-column shadow">
+                <div class="card-body flex-grow-1">
+                    <h5 class="card-title fw-bold">Proposal Menunggu Verifikasi</h5>
                     <p class="card-text">Proposal yang perlu Anda verifikasi</p>
-                    <a href="{{ route('kjfd.proposals.index') }}" class="btn btn-light">Lihat Proposal</a>
+                    {{-- Di sini Anda bisa menampilkan angka dari query yang Anda miliki jika belum ada --}}
+                    <h1 class="display-4 fw-bold mb-3">
+                         {{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'menunggu verifikasi dosen kjfd')->count() }}
+                    </h1>
+                    <a href="{{ route('kjfd.proposals.index') }}" class="btn btn-light btn-sm mt-auto">Lihat Proposal</a>
                 </div>
             </div>
         </div>
 
-        <!-- Card untuk Statistik -->
-        <div class="col-md-4 mb-4">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Proposal Disetujui</h5>
+        {{-- Card 2: Proposal Disetujui --}}
+        <div class="col-lg-5 col-md-6 mb-4">
+            {{-- Tambahkan h-100 dan d-flex flex-column --}}
+            <div class="card bg-success text-white h-100 d-flex flex-column shadow">
+                <div class="card-body flex-grow-1">
+                    <h5 class="card-title fw-bold">Proposal Disetujui</h5>
                     <p class="card-text">Total proposal yang telah Anda setujui</p>
-                    <h3>{{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'disetujui')->count() }}</h3>
-                    <a href="{{ route('kjfd.proposals.index', ['status' => 'disetujui']) }}" class="btn btn-light btn-sm mt-2">Lihat Proposal</a>
+                    <h1 class="display-4 fw-bold mb-3">
+                        {{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'disetujui')->count() }}
+                    </h1>
+                    {{-- Hapus btn-sm yang berulang di kode asli Anda --}}
+                    <a href="{{ route('kjfd.proposals.index', ['status' => 'disetujui']) }}" class="btn btn-light mt-auto">Lihat Proposal</a>
                 </div>
             </div>
         </div>
 
-        <!-- Card untuk Proposal Direvisi -->
-        <div class="col-md-4 mb-4">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Proposal Direvisi</h5>
+    </div> 
+    {{-- Akhir BARIS 1 --}}
+
+    {{-- BARIS 2: Proposal Direvisi & Proposal Ditolak --}}
+    {{-- Tambahkan d-flex untuk menyamakan tinggi card di baris ini --}}
+    <div class="row d-flex justify-content-center">
+
+        {{-- Card 3: Proposal Direvisi --}}
+        <div class="col-lg-5 col-md-6 mb-4">
+            {{-- Tambahkan h-100 dan d-flex flex-column --}}
+            <div class="card bg-warning text-dark h-100 d-flex flex-column shadow"> {{-- text-dark agar tulisan terbaca --}}
+                <div class="card-body flex-grow-1">
+                    <h5 class="card-title fw-bold">Proposal Direvisi</h5>
                     <p class="card-text">Proposal yang sedang direvisi mahasiswa</p>
-                    <h3>{{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'revisi')->count() }}</h3>
-                    <a href="{{ route('kjfd.proposals.index', ['status' => 'revisi']) }}" class="btn btn-light btn-sm mt-2">Lihat Proposal</a>
+                    <h1 class="display-4 fw-bold mb-3">
+                        {{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'revisi')->count() }}
+                    </h1>
+                    <a href="{{ route('kjfd.proposals.index', ['status' => 'revisi']) }}" class="btn btn-light mt-auto">Lihat Proposal</a>
                 </div>
             </div>
         </div>
 
-        <!-- Card untuk Proposal Ditolak -->
-        <div class="col-md-4 mb-4">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Proposal Ditolak</h5>
+        {{-- Card 4: Proposal Ditolak --}}
+        <div class="col-lg-5 col-md-6 mb-4">
+            {{-- Tambahkan h-100 dan d-flex flex-column --}}
+            <div class="card bg-danger text-white h-100 d-flex flex-column shadow">
+                <div class="card-body flex-grow-1">
+                    <h5 class="card-title fw-bold">Proposal Ditolak</h5>
                     <p class="card-text">Total proposal yang telah Anda tolak</p>
-                    <h3>{{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'ditolak')->count() }}</h3>
-                    <a href="{{ route('kjfd.proposals.index', ['status' => 'ditolak']) }}" class="btn btn-light btn-sm mt-2">Lihat Proposal</a>
+                    <h1 class="display-4 fw-bold mb-3">
+                        {{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'ditolak')->count() }}
+                    </h1>
+                    <a href="{{ route('kjfd.proposals.index', ['status' => 'ditolak']) }}" class="btn btn-light mt-auto">Lihat Proposal</a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Tabel Proposal Terbaru -->
+    </div>
+    {{-- Akhir BARIS 2 --}}
+
+
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card shadow mb-4">
                 <div class="card-header">
                     <h5>Proposal Terbaru untuk Verifikasi</h5>
                 </div>

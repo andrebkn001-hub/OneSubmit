@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OneSubmit Dashboard</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             overflow-x: hidden;
@@ -32,7 +32,7 @@
         }
         .content {
             margin-left: 250px;
-            padding: 20px;
+            padding: 70px 20px 20px 20px;
             min-height: 100vh;
         }
         .navbar {
@@ -93,7 +93,6 @@
     </style>
 </head>
 <body>
-    <!-- Navbar atas -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <button class="navbar-toggler d-md-none" type="button" onclick="toggleSidebar()">
@@ -103,43 +102,44 @@
             <div class="d-flex">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                    {{-- TOMBOL LOGOUT DENGAN ICON --}}
+                    <button type="submit" class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</button>
                 </form>
             </div>
         </div>
     </nav>
 
-    <!-- Sidebar kiri -->
     <div class="sidebar">
         <h5 class="text-center fw-bold mb-4">Menu</h5>
-        <a href="{{ route('dashboard') }}">🏠 Dashboard</a>
+        <a href="{{ route('dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
 
         @if(Auth::user()->role == 'mahasiswa')
-            <a href="{{ route('mahasiswa.dashboard') }}">Ajukan Proposal</a>
-            <a href="{{ route('mahasiswa.status') }}">📄 Status Proposal</a>
+            <a href="{{ route('mahasiswa.proposal.create') }}"><i class="bi bi-send"></i> Ajukan Proposal</a>
+            <a href="{{ route('mahasiswa.status') }}"><i class="bi bi-envelope-paper"></i> Status Proposal</a>
         @endif
 
         @if(Auth::user()->role == 'admin')
-            <a href="{{ route('admin.dashboard') }}">Kelola Data</a>
+            {{-- DITAMBAHKAN ICON --}}
+            <a href="{{ route('admin.dashboard') }}"><i class="bi bi-person-gear"></i> Kelola Data</a>
         @endif
 
         @if(Auth::user()->role == 'ketua_jurusan')
-            <a href="{{ route('jurusan.dashboard') }}">Validasi Jurusan</a>
+            {{-- DITAMBAHKAN ICON --}}
+            <a href="{{ route('jurusan.proposals.kjfd') }}"><i class="bi bi-file-earmark-check"></i> Daftar Proposal</a>
         @endif
 
         @if(Auth::user()->role == 'ketua_kjfd')
-            <a href="{{ route('kjfd.dashboard') }}">Validasi KJFD</a>
+            {{-- DITAMBAHKAN ICON --}}
+            <a href="{{ route('kjfd.dashboard') }}"><i class="bi bi-clipboard2-check"></i> Validasi KJFD</a>
         @endif
 
-        <a href="{{ route('profile.edit') }}">👤 Profil</a>
+        <a href="{{ route('profile.edit') }}"><i class="bi bi-person"></i> Profil</a>
     </div>
 
-    <!-- Konten utama -->
     <div class="content">
         @yield('content')
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function toggleSidebar() {

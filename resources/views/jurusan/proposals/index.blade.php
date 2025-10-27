@@ -15,7 +15,6 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <!-- Form Pencarian -->
     <form method="GET" action="{{ route('jurusan.proposals.index', $bidang) }}" class="mb-3">
         <div class="input-group">
             <input type="text" name="nim" class="form-control" placeholder="Cari berdasarkan NIM..." value="{{ request('nim') }}">
@@ -67,8 +66,9 @@
                         </span>
                     </td>
                     <td>
+                        {{-- 🚀 PERBAIKAN: Menggunakan route Controller untuk mengatasi Error 404 --}}
                         @if ($proposal->file_path)
-                            <a href="{{ asset('storage/'.$proposal->file_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                            <a href="{{ route('jurusan.proposals.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-primary">
                                 Lihat File
                             </a>
                         @else

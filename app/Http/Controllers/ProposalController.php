@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage; // <<< IMPORT STORAGE SUDAH BENAR
 
 class ProposalController extends Controller
 {
@@ -125,6 +126,33 @@ class ProposalController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunduh surat. Silakan coba lagi.');
         }
+    }
+
+    // 🚀 FUNGSI BARU UNTUK MENGATASI ERROR 404 (Pengiriman File)
+    /**
+     * Mengirim file proposal secara paksa dari storage/app/public ke browser.
+     */
+    public function viewFile($id)
+    {
+        // 1. Cari Proposal berdasarkan ID
+        $proposal = Proposal::findOrFail($id);
+
+        // 2. Ambil path file (misalnya: proposals/namafile.pdf)
+        $filePath = $proposal->file_path; 
+
+        // 3. Verifikasi Keberadaan File
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
+            // Jika path kosong atau file tidak ditemukan
+            return abort(404, 'Berkas proposal tidak ditemukan di sistem penyimpanan. Silakan hubungi admin.');
+        }
+
+        // 4. Mengirimkan Respons File ke Browser
+        // Menggunakan response() untuk mengirim file secara langsung dari storage
+        return Storage::disk('public')->response($filePath, $proposal->judul . '.pdf', [
+            'Content-Type' => 'application/pdf', 
+            // 'inline' memaksa browser menampilkan file
+            'Content-Disposition' => 'inline; filename="' . $proposal->judul . '.pdf"'
+        ]);
     }
 
     /**

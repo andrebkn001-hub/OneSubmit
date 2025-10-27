@@ -28,14 +28,27 @@
                 <tr>
                     <td>{{ $proposal->nama_lengkap }}</td>
                     <td>{{ $proposal->nim }}</td>
-                    <td>{{ $proposal->judul_proposal }}</td>
+                    
+                    {{-- 💡 KOREKSI: Memisahkan <td> untuk Judul dan Bidang Minat --}}
+                    <td>{{ $proposal->judul }}</td>
                     <td>{{ $proposal->bidang_minat }}</td>
+                    
                     <td>{{ $proposal->status }}</td>
+                    
+                    {{-- 🚀 SOLUSI 404: Menggunakan route Controller --}}
                     <td>
-                        <a href="{{ asset('storage/' . $proposal->file_proposal) }}" target="_blank">Lihat File</a>
+                        @if (isset($proposal->file_path))
+                            <a href="{{ route('admin.proposals.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-info">
+                                Lihat File
+                            </a>
+                        @else
+                            <span class="text-muted">Tidak ada file</span>
+                        @endif
                     </td>
+                    
                     <td>
-                        @if ($proposal->status == 'Menunggu Validasi')
+                        {{-- Asumsi status awal yang butuh validasi dari Admin adalah 'menunggu validasi' --}}
+                        @if (strtolower($proposal->status) == 'menunggu validasi') 
                             <form action="{{ route('admin.proposals.approve', $proposal->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm">Terima</button>

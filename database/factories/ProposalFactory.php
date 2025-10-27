@@ -21,7 +21,7 @@ class ProposalFactory extends Factory
             'nama_lengkap' => $this->faker->name(),
             'nim' => $this->faker->numerify('##########'),
             'judul' => $this->faker->sentence(6),
-            'bidang_minat' => $this->faker->randomElement(['Computer Science', 'Mathematics', 'Physics', 'Chemistry', 'Biology']),
+            'bidang_minat' => $this->faker->randomElement(['Information Management', 'Business Intelligence', 'Data Engineering', 'Information Retrieval']),
             'file_path' => 'proposals/' . $this->faker->uuid() . '.pdf',
             'status' => $this->faker->randomElement(['menunggu verifikasi', 'menunggu verifikasi dosen kjfd', 'disetujui', 'ditolak', 'revisi']),
             'dosen_kjfd_id' => null,

@@ -67,6 +67,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/proposals', [AdminProposalController::class, 'index'])->name('proposals.index');
     Route::post('/proposals/{id}/approve', [AdminProposalController::class, 'approve'])->name('proposals.approve');
     Route::post('/proposals/{id}/reject', [AdminProposalController::class, 'reject'])->name('proposals.reject');
+    //KOREKSI: Panggil Controller Admin
+    Route::get('/proposals/view-file/{id}', [\App\Http\Controllers\AdminProposalController::class, 'viewFile'])->name('proposals.view-file');
 });
 
 // ==========================
@@ -89,7 +91,11 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 
     // Download surat pemberitahuan
     Route::get('/proposal/download-surat/{id}', [ProposalController::class, 'downloadSurat'])->name('proposal.download-surat');
+
+    // View file proposal
+    Route::get('/proposal/view-file/{id}', [ProposalController::class, 'viewFile'])->name('proposal.view-file');
 });
+
 // ==========================
 // KETUA JURUSAN ROUTES
 // ==========================
@@ -97,6 +103,8 @@ Route::middleware(['auth', 'role:ketua_jurusan'])->prefix('jurusan')->name('juru
     Route::get('/dashboard', fn() => view('dashboard.jurusan'))->name('dashboard');
     Route::get('/proposals/kjfd', [App\Http\Controllers\JurusanController::class, 'kjfdSelection'])->name('proposals.kjfd');
     Route::get('/proposals/{bidang}', [App\Http\Controllers\JurusanController::class, 'proposalsIndex'])->name('proposals.index');
+    // KOREKSI: Panggil Controller Jurusan
+    Route::get('/proposals/view-file/{id}', [\App\Http\Controllers\JurusanController::class, 'viewFile'])->name('proposals.view-file');
 });
 
 // ==========================
@@ -108,6 +116,7 @@ Route::middleware(['auth', 'role:dosen_kjfd'])->prefix('kjfd')->name('kjfd.')->g
     Route::post('/proposals/{id}/approve', [\App\Http\Controllers\DosenKjfdProposalController::class, 'approve'])->name('proposals.approve');
     Route::post('/proposals/{id}/revise', [\App\Http\Controllers\DosenKjfdProposalController::class, 'revise'])->name('proposals.revise');
     Route::post('/proposals/{id}/reject', [\App\Http\Controllers\DosenKjfdProposalController::class, 'reject'])->name('proposals.reject');
+    Route::get('/proposals/view-file/{id}', [\App\Http\Controllers\DosenKjfdProposalController::class, 'viewFile'])->name('proposals.view-file');
 });
 
 

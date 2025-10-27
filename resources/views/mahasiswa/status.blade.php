@@ -61,7 +61,6 @@
                     <th>Bidang Minat</th>
                     <th>Status</th>
                     <th>Berkas</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -106,28 +105,11 @@
                         {{-- ✅ Tombol lihat file --}}
                         <td>
                             @if ($proposal->file_path)
-                                <a href="{{ asset('storage/'.$proposal->file_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                <a href="{{ route('mahasiswa.proposal.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-primary">
                                     Lihat File
                                 </a>
                             @else
                                 <span class="text-muted">Tidak ada file</span>
-                            @endif
-                        </td>
-
-                        {{-- ✅ Kolom Aksi --}}
-                        <td>
-                            @if (strtolower($proposal->status) == 'revisi')
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal{{ $proposal->id }}">
-                                    Upload Revisi
-                                </button>
-                            @elseif (strtolower($proposal->status) == 'menunggu verifikasi dosen kjfd')
-                                <span class="badge bg-info">Menunggu Verifikasi Dosen KJFD</span>
-                            @elseif (strtolower($proposal->status) == 'disetujui')
-                                <a href="{{ route('mahasiswa.proposal.download-surat', $proposal->id) }}" class="btn btn-success btn-sm">
-                                    <i class="fas fa-download"></i> Download Surat
-                                </a>
-                            @else
-                                <span class="text-muted">-</span>
                             @endif
                         </td>
 

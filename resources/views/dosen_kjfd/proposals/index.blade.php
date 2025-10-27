@@ -12,7 +12,6 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <!-- Form Pencarian dan Filter -->
     <form method="GET" action="{{ route('kjfd.proposals.index') }}" class="mb-3">
         <div class="row">
             <div class="col-md-4">
@@ -66,7 +65,7 @@
                     </td>
                     <td>
                         @if ($proposal->file_path)
-                            <a href="{{ asset('storage/'.$proposal->file_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                            <a href="{{ route('kjfd.proposals.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-primary">
                                 Lihat File
                             </a>
                         @else
@@ -79,13 +78,13 @@
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm">Terima</button>
                             </form>
+                            {{-- Tombol memanggil Modal --}}
                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#reviseModal{{ $proposal->id }}">Revisi</button>
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $proposal->id }}">Tolak</button>
                         @else
                             <span class="text-muted">Sudah diproses</span>
                         @endif
 
-                        <!-- Revisi Modal -->
                         <div class="modal fade" id="reviseModal{{ $proposal->id }}" tabindex="-1" aria-labelledby="reviseModalLabel{{ $proposal->id }}" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -97,8 +96,9 @@
                                         @csrf
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="revision_message_{{ $proposal->id }}" class="form-label">Pesan Revisi</label>
-                                                <textarea class="form-control" id="revision_message_{{ $proposal->id }}" name="revision_message" rows="3" required></textarea>
+                                                <label for="revision_message_{{ $proposal->id }}" class="form-label">Pesan Revisi (Minimal 10 Karakter)</label>
+                                                {{-- 🚀 PERBAIKAN: Menambahkan minlength="10" untuk mencocokkan Controller --}}
+                                                <textarea class="form-control" id="revision_message_{{ $proposal->id }}" name="revision_message" rows="3" required minlength="10"></textarea>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -110,7 +110,6 @@
                             </div>
                         </div>
 
-                        <!-- Reject Modal -->
                         <div class="modal fade" id="rejectModal{{ $proposal->id }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ $proposal->id }}" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -122,8 +121,9 @@
                                         @csrf
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="rejection_message_{{ $proposal->id }}" class="form-label">Alasan Penolakan</label>
-                                                <textarea class="form-control" id="rejection_message_{{ $proposal->id }}" name="rejection_message" rows="3" required></textarea>
+                                                <label for="rejection_message_{{ $proposal->id }}" class="form-label">Alasan Penolakan (Minimal 10 Karakter)</label>
+                                                {{-- 🚀 PERBAIKAN: Menambahkan minlength="10" untuk mencocokkan Controller --}}
+                                                <textarea class="form-control" id="rejection_message_{{ $proposal->id }}" name="rejection_message" rows="3" required minlength="10"></textarea>
                                             </div>
                                         </div>
                                         <div class="modal-footer">

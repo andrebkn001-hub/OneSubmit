@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage; // <<< DITAMBAHKAN: Diperlukan untuk mengirim file
 
 class DosenKjfdProposalController extends Controller
 {
@@ -118,5 +119,32 @@ class DosenKjfdProposalController extends Controller
                 ->withInput()
                 ->with('error', 'Terjadi kesalahan saat menolak proposal. Silakan coba lagi.');
         }
+    }
+
+    // 🚀 FUNGSI BARU: MENGIRIM FILE PROPOSAL VIA CONTROLLER (FIX 404)
+    /**
+     * View/Download file proposal.
+     * Menggunakan mekanisme Controller untuk menghindari masalah Symbolic Link.
+     */
+    public function viewFile(int $id)
+    {
+        $proposal = Proposal::findOrFail($id);
+
+        // Otorisasi: Pastikan dosen KJFD yang ditugaskan dapat melihat file
+        if (!$this->proposalService->dosenKjfdAssignedToProposal($proposal, Auth::id())) {
+            abort(403, 'Anda tidak memiliki izin untuk melihat file proposal ini.');
+        }
+
+        $filePath = $proposal->file_path;
+
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
+            return abort(404, 'Berkas proposal tidak ditemukan di sistem penyimpanan.');
+        }
+
+        // Mengirimkan respons file ke browser
+        return Storage::disk('public')->response($filePath, $proposal->judul . '.pdf', [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $proposal->judul . '.pdf"'
+        ]);
     }
 }

@@ -102,6 +102,7 @@ class UserTest extends TestCase
             'password',
             'role',
             'bidang',
+            'nim',
         ];
 
         $this->assertEquals($fillable, (new User)->getFillable());

@@ -59,7 +59,7 @@ class AdminProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'bidang_minat' => 'Computer Science',
-            'status' => 'menunggu verifikasi'
+            'status' => 'menunggu_verifikasi'
         ]);
 
         $response = $this->controller->approve($proposal->id);
@@ -68,7 +68,7 @@ class AdminProposalControllerTest extends TestCase
         $this->assertStringContainsString('Proposal berhasil diteruskan ke Dosen KJFD', $response->getSession()->get('success'));
 
         $proposal->refresh();
-        $this->assertEquals('menunggu verifikasi dosen kjfd', $proposal->status);
+        $this->assertEquals('menunggu_verifikasi_dosen_kjfd', $proposal->status);
         $this->assertEquals($dosenKjfd->id, $proposal->dosen_kjfd_id);
     }
 
@@ -79,7 +79,7 @@ class AdminProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'bidang_minat' => 'Non-existent Field',
-            'status' => 'menunggu verifikasi'
+            'status' => 'menunggu_verifikasi'
         ]);
 
         $response = $this->controller->approve($proposal->id);
@@ -93,7 +93,7 @@ class AdminProposalControllerTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
 
-        $proposal = Proposal::factory()->create(['status' => 'menunggu verifikasi']);
+        $proposal = Proposal::factory()->create(['status' => 'menunggu_verifikasi']);
 
         $request = new Request([
             'rejection_message' => 'Proposal tidak memenuhi syarat minimum.'
@@ -114,7 +114,7 @@ class AdminProposalControllerTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
 
-        $proposal = Proposal::factory()->create(['status' => 'menunggu verifikasi']);
+        $proposal = Proposal::factory()->create(['status' => 'menunggu_verifikasi']);
 
         $request = new Request([
             'rejection_message' => 'Too short'

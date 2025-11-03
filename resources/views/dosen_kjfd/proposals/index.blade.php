@@ -20,7 +20,7 @@
             <div class="col-md-3">
                 <select name="status" class="form-control">
                     <option value="">Semua Status</option>
-                    <option value="menunggu verifikasi dosen kjfd" {{ request('status') == 'menunggu verifikasi dosen kjfd' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                    <option value="menunggu_verifikasi_dosen_kjfd" {{ request('status') == 'menunggu_verifikasi_dosen_kjfd' ? 'selected' : '' }}>Menunggu Verifikasi</option>
                     <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>Revisi</option>
                     <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                     <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
@@ -73,7 +73,7 @@
                         @endif
                     </td>
                     <td>
-                        @if($proposal->status === 'menunggu verifikasi dosen kjfd' || $proposal->status === 'revisi')
+                        @if($proposal->status === 'menunggu_verifikasi_dosen_kjfd' || $proposal->status === 'revisi')
                             <form action="{{ route('kjfd.proposals.approve', $proposal->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm">Terima</button>

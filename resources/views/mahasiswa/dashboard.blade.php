@@ -67,13 +67,13 @@
                     <div class="row text-center">
                         <div class="col-6 col-md-3 mb-3">
                             <div class="border rounded p-3">
-                                <h3 class="text-warning">{{ \App\Models\Proposal::where('user_id', auth()->id())->where('status', 'menunggu verifikasi')->count() }}</h3>
+                                <h3 class="text-warning">{{ \App\Models\Proposal::where('user_id', auth()->id())->where('status', 'menunggu_verifikasi')->count() }}</h3>
                                 <small class="text-muted">Menunggu Verifikasi</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-3 mb-3">
                             <div class="border rounded p-3">
-                                <h3 class="text-info">{{ \App\Models\Proposal::where('user_id', auth()->id())->where('status', 'menunggu verifikasi dosen kjfd')->count() }}</h3>
+                                <h3 class="text-info">{{ \App\Models\Proposal::where('user_id', auth()->id())->where('status', 'menunggu_verifikasi_dosen_kjfd')->count() }}</h3>
                                 <small class="text-muted">Verifikasi KJFD</small>
                             </div>
                         </div>

@@ -76,10 +76,10 @@
                         {{-- ✅ Status tampil dengan badge warna berbeda --}}
                         <td>
                             @switch(strtolower($proposal->status))
-                                @case('menunggu verifikasi')
+                                @case('menunggu_verifikasi')
                                     <span class="badge bg-warning text-dark">Menunggu Verifikasi Admin</span>
                                     @break
-                                @case('menunggu verifikasi dosen kjfd')
+                                @case('menunggu_verifikasi_dosen_kjfd')
                                     <span class="badge bg-info text-dark">Menunggu Verifikasi Dosen KJFD</span>
                                     @break
                                 @case('disetujui')

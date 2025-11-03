@@ -44,7 +44,7 @@ class AdminProposalController extends Controller
             }
 
             $this->proposalService->updateProposal($proposal, [
-                'status' => 'menunggu verifikasi dosen kjfd',
+                'status' => 'menunggu_verifikasi_dosen_kjfd',
                 'dosen_kjfd_id' => $dosenKjfd->id,
             ]);
 

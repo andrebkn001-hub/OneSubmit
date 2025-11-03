@@ -78,6 +78,7 @@ class UserSeeder extends Seeder
         if (!User::where('email', 'mahasiswa@onesubmit.com')->exists()) {
             User::create([
                 'name' => 'Mahasiswa',
+                'nim' => '1234567890',
                 'email' => 'mahasiswa@onesubmit.com',
                 'password' => Hash::make('mahasiswa123'),
                 'role' => 'mahasiswa',

@@ -46,7 +46,7 @@ class MahasiswaController extends Controller
                 'judul' => $validatedData['judul'],
                 'bidang_minat' => $validatedData['bidang_minat'],
                 'file_path' => $filePath,
-                'status' => 'menunggu verifikasi',
+                'status' => 'menunggu_verifikasi',
             ]);
 
             return redirect()->route('mahasiswa.status')->with('success', 'Proposal berhasil diajukan!');

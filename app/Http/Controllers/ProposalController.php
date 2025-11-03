@@ -41,7 +41,7 @@ class ProposalController extends Controller
                 'judul' => $request->judul,
                 'bidang_minat' => $request->bidang_minat,
                 'file_path' => $filePath,
-                'status' => 'menunggu verifikasi',
+                'status' => 'menunggu_verifikasi',
             ]);
 
             return redirect()->route('mahasiswa.dashboard')->with('success', 'Proposal berhasil dikirim!');
@@ -88,7 +88,7 @@ class ProposalController extends Controller
                 'judul' => $request->judul,
                 'bidang_minat' => $request->bidang_minat,
                 'file_path' => $filePath,
-                'status' => 'menunggu verifikasi dosen kjfd',
+                'status' => 'menunggu_verifikasi_dosen_kjfd',
                 'revision_message' => null,
                 'rejection_message' => null,
             ]);

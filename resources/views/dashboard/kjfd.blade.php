@@ -23,7 +23,7 @@
                     <p class="card-text">Proposal yang perlu Anda verifikasi</p>
                     {{-- Di sini Anda bisa menampilkan angka dari query yang Anda miliki jika belum ada --}}
                     <h1 class="display-4 fw-bold mb-3">
-                         {{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'menunggu verifikasi dosen kjfd')->count() }}
+                         {{ \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())->where('status', 'menunggu_verifikasi_dosen_kjfd')->count() }}
                     </h1>
                     <a href="{{ route('kjfd.proposals.index') }}" class="btn btn-light btn-sm mt-auto">Lihat Proposal</a>
                 </div>
@@ -96,7 +96,7 @@
                 <div class="card-body">
                     @php
                         $recentProposals = \App\Models\Proposal::where('dosen_kjfd_id', Auth::id())
-                            ->where('status', 'menunggu verifikasi dosen kjfd')
+                            ->where('status', 'menunggu_verifikasi_dosen_kjfd')
                             ->latest()
                             ->take(5)
                             ->get();

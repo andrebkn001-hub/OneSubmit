@@ -53,7 +53,7 @@
                                 $badgeClass = 'success';
                             } elseif (strtolower($proposal->status) == 'ditolak') {
                                 $badgeClass = 'danger';
-                            } elseif (strtolower($proposal->status) == 'menunggu verifikasi dosen kjfd') {
+                            } elseif (strtolower($proposal->status) == 'menunggu_verifikasi_dosen_kjfd') {
                                 $badgeClass = 'info';
                                 $statusText = 'Menunggu Verifikasi Dosen KJFD';
                             } elseif (strtolower($proposal->status) == 'revisi') {

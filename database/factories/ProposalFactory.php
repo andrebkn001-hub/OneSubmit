@@ -23,7 +23,7 @@ class ProposalFactory extends Factory
             'judul' => $this->faker->sentence(6),
             'bidang_minat' => $this->faker->randomElement(['Information Management', 'Business Intelligence', 'Data Engineering', 'Information Retrieval']),
             'file_path' => 'proposals/' . $this->faker->uuid() . '.pdf',
-            'status' => $this->faker->randomElement(['menunggu verifikasi', 'menunggu verifikasi dosen kjfd', 'disetujui', 'ditolak', 'revisi']),
+            'status' => $this->faker->randomElement(['menunggu_verifikasi', 'menunggu_verifikasi_dosen_kjfd', 'disetujui', 'ditolak', 'revisi']),
             'dosen_kjfd_id' => null,
             'revision_message' => null,
             'rejection_message' => null,

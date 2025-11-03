@@ -30,7 +30,7 @@ class DosenKjfdProposalController extends Controller
             $query->where('status', $request->status);
         } else {
             // Default: tampilkan yang perlu diverifikasi atau dalam proses
-            $query->whereIn('status', ['menunggu verifikasi dosen kjfd', 'revisi']);
+            $query->whereIn('status', ['menunggu_verifikasi_dosen_kjfd', 'revisi']);
         }
 
         if ($request->has('nim') && !empty($request->nim)) {

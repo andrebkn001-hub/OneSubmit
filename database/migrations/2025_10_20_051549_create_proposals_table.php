@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('judul');
             $table->string('bidang_minat');
             $table->string('file_path');
-            $table->string('status')->default('Menunggu Verifikasi');
+            $table->string('status')->default('menunggu_verifikasi');
             $table->timestamps();
         });
     }

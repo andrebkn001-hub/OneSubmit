@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->text('rejection_message')->nullable();
-        });
+        Schema::dropIfExists('verifikasis');
+        Schema::dropIfExists('pengajuans');
     }
 
     /**
@@ -21,8 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->dropColumn('rejection_message');
-        });
+        // Recreate tables if needed, but since they are legacy, we can leave empty
     }
 };

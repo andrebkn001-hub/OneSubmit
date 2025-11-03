@@ -164,7 +164,7 @@ class ProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'user_id' => $user->id,
-            'status' => 'menunggu verifikasi' // not in revision
+            'status' => 'menunggu_verifikasi' // not in revision
         ]);
 
         $file = UploadedFile::fake()->create('updated_proposal.pdf', 1000);

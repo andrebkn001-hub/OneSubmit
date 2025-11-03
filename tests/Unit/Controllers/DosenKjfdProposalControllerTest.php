@@ -31,7 +31,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposals = Proposal::factory()->count(3)->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $request = new Request();
@@ -48,12 +48,12 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal1 = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd',
+            'status' => 'menunggu_verifikasi_dosen_kjfd',
             'nim' => '123456789'
         ]);
         $proposal2 = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd',
+            'status' => 'menunggu_verifikasi_dosen_kjfd',
             'nim' => '987654321'
         ]);
 
@@ -71,7 +71,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $response = $this->controller->approve($proposal->id);
@@ -91,7 +91,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd1->id, // assigned to different dosen
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $response = $this->controller->approve($proposal->id);
@@ -107,7 +107,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $request = new Request([
@@ -132,7 +132,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd1->id,
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $request = new Request([
@@ -152,7 +152,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $request = new Request([
@@ -176,7 +176,7 @@ class DosenKjfdProposalControllerTest extends TestCase
 
         $proposal = Proposal::factory()->create([
             'dosen_kjfd_id' => $dosenKjfd->id,
-            'status' => 'menunggu verifikasi dosen kjfd'
+            'status' => 'menunggu_verifikasi_dosen_kjfd'
         ]);
 
         $request = new Request([

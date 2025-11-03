@@ -31,7 +31,7 @@ class ProposalTest extends TestCase
 
     public function test_is_pending_verification()
     {
-        $proposal = Proposal::factory()->create(['status' => 'menunggu verifikasi']);
+        $proposal = Proposal::factory()->create(['status' => 'menunggu_verifikasi']);
         $this->assertTrue($proposal->isPendingVerification());
 
         $proposal->update(['status' => 'disetujui']);
@@ -67,7 +67,7 @@ class ProposalTest extends TestCase
 
     public function test_is_waiting_for_kjfd_verification()
     {
-        $proposal = Proposal::factory()->create(['status' => 'menunggu verifikasi dosen kjfd']);
+        $proposal = Proposal::factory()->create(['status' => 'menunggu_verifikasi_dosen_kjfd']);
         $this->assertTrue($proposal->isWaitingForKjfdVerification());
 
         $proposal->update(['status' => 'disetujui']);
@@ -77,8 +77,8 @@ class ProposalTest extends TestCase
     public function test_get_status_badge_color()
     {
         $statuses = [
-            'menunggu verifikasi' => 'yellow',
-            'menunggu verifikasi dosen kjfd' => 'blue',
+            'menunggu_verifikasi' => 'yellow',
+            'menunggu_verifikasi_dosen_kjfd' => 'blue',
             'disetujui' => 'green',
             'ditolak' => 'red',
             'revisi' => 'orange',
@@ -94,8 +94,8 @@ class ProposalTest extends TestCase
     public function test_get_status_label()
     {
         $statuses = [
-            'menunggu verifikasi' => 'Menunggu Verifikasi',
-            'menunggu verifikasi dosen kjfd' => 'Menunggu Verifikasi Dosen KJFD',
+            'menunggu_verifikasi' => 'Menunggu Verifikasi',
+            'menunggu_verifikasi_dosen_kjfd' => 'Menunggu Verifikasi Dosen KJFD',
             'disetujui' => 'Disetujui',
             'ditolak' => 'Ditolak',
             'revisi' => 'Perlu Revisi',

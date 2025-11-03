@@ -24,6 +24,7 @@ class RegisteredUserControllerTest extends TestCase
     {
         $userData = [
             'name' => 'Test User',
+            'nim' => '1234567890',
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
@@ -35,6 +36,7 @@ class RegisteredUserControllerTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'name' => 'Test User',
+            'nim' => '1234567890',
             'email' => 'test@example.com',
             'role' => 'mahasiswa',
         ]);
@@ -50,6 +52,7 @@ class RegisteredUserControllerTest extends TestCase
 
         $userData = [
             'name' => 'Test User',
+            'nim' => '1234567890',
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
@@ -59,5 +62,38 @@ class RegisteredUserControllerTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHasErrors('email');
+    }
+
+    public function test_store_fails_with_duplicate_nim()
+    {
+        User::factory()->create(['nim' => '1234567890']);
+
+        $userData = [
+            'name' => 'Test User',
+            'nim' => '1234567890',
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->post('/register', $userData);
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('nim');
+    }
+
+    public function test_store_fails_without_nim()
+    {
+        $userData = [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->post('/register', $userData);
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('nim');
     }
 }

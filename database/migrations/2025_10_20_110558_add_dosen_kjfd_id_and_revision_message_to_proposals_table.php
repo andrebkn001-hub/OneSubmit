@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::table('proposals', function (Blueprint $table) {
             $table->foreignId('dosen_kjfd_id')->nullable()->constrained('users');
             $table->text('revision_message')->nullable();
-            $table->string('status')->default('menunggu verifikasi')->change();
+            $table->text('rejection_message')->nullable();
+            $table->string('status')->default('menunggu_verifikasi')->change();
         });
     }
 
@@ -27,7 +28,8 @@ return new class extends Migration
             $table->dropForeign(['dosen_kjfd_id']);
             $table->dropColumn('dosen_kjfd_id');
             $table->dropColumn('revision_message');
-            $table->string('status')->default('disetujui')->change();
+            $table->dropColumn('rejection_message');
+            $table->string('status')->default('menunggu_verifikasi')->change();
         });
     }
 };

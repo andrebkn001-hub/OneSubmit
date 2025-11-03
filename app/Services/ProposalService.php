@@ -99,4 +99,34 @@ class ProposalService
     {
         return $proposal->status === 'revisi';
     }
+
+    /**
+     * Get status badge color for UI
+     */
+    public function getStatusBadgeColor(string $status): string
+    {
+        return match($status) {
+            'menunggu_verifikasi' => 'yellow',
+            'menunggu_verifikasi_dosen_kjfd' => 'blue',
+            'disetujui' => 'green',
+            'ditolak' => 'red',
+            'revisi' => 'orange',
+            default => 'gray',
+        };
+    }
+
+    /**
+     * Get human readable status label
+     */
+    public function getStatusLabel(string $status): string
+    {
+        return match($status) {
+            'menunggu_verifikasi' => 'Menunggu Verifikasi',
+            'menunggu_verifikasi_dosen_kjfd' => 'Menunggu Verifikasi Dosen KJFD',
+            'disetujui' => 'Disetujui',
+            'ditolak' => 'Ditolak',
+            'revisi' => 'Perlu Revisi',
+            default => 'Unknown',
+        };
+    }
 }

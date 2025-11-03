@@ -49,7 +49,7 @@ class Proposal extends Model
      */
     public function isPendingVerification(): bool
     {
-        return $this->status === 'menunggu verifikasi';
+        return $this->status === 'menunggu_verifikasi';
     }
 
     /**
@@ -81,7 +81,7 @@ class Proposal extends Model
      */
     public function isWaitingForKjfdVerification(): bool
     {
-        return $this->status === 'menunggu verifikasi dosen kjfd';
+        return $this->status === 'menunggu_verifikasi_dosen_kjfd';
     }
 
     /**
@@ -90,8 +90,8 @@ class Proposal extends Model
     public function getStatusBadgeColor(): string
     {
         return match($this->status) {
-            'menunggu verifikasi' => 'yellow',
-            'menunggu verifikasi dosen kjfd' => 'blue',
+            'menunggu_verifikasi' => 'yellow',
+            'menunggu_verifikasi_dosen_kjfd' => 'blue',
             'disetujui' => 'green',
             'ditolak' => 'red',
             'revisi' => 'orange',
@@ -105,8 +105,8 @@ class Proposal extends Model
     public function getStatusLabel(): string
     {
         return match($this->status) {
-            'menunggu verifikasi' => 'Menunggu Verifikasi',
-            'menunggu verifikasi dosen kjfd' => 'Menunggu Verifikasi Dosen KJFD',
+            'menunggu_verifikasi' => 'Menunggu Verifikasi',
+            'menunggu_verifikasi_dosen_kjfd' => 'Menunggu Verifikasi Dosen KJFD',
             'disetujui' => 'Disetujui',
             'ditolak' => 'Ditolak',
             'revisi' => 'Perlu Revisi',

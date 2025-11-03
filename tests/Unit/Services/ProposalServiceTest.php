@@ -77,14 +77,14 @@ class ProposalServiceTest extends TestCase
             'judul' => 'Test Proposal',
             'bidang_minat' => 'Computer Science',
             'file_path' => 'proposals/test.pdf',
-            'status' => 'menunggu verifikasi',
+            'status' => 'menunggu_verifikasi',
         ];
 
         $proposal = $this->proposalService->createProposal($data);
 
         $this->assertInstanceOf(Proposal::class, $proposal);
         $this->assertEquals('Test Proposal', $proposal->judul);
-        $this->assertEquals('menunggu verifikasi', $proposal->status);
+        $this->assertEquals('menunggu_verifikasi', $proposal->status);
     }
 
     public function test_update_proposal_success()
@@ -149,7 +149,7 @@ class ProposalServiceTest extends TestCase
 
         $this->assertTrue($this->proposalService->isProposalInRevision($proposal));
 
-        $proposal->update(['status' => 'menunggu verifikasi']);
+        $proposal->update(['status' => 'menunggu_verifikasi']);
         $this->assertFalse($this->proposalService->isProposalInRevision($proposal));
     }
 }

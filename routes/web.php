@@ -101,7 +101,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/status', [ProposalController::class, 'status'])->name('status');
 
     // Update proposal untuk revisi
-    Route::post('/proposal/update/{id}', [ProposalController::class, 'update'])->name('proposal.update');
+    Route::post('/proposal/{id}/revisi', [ProposalController::class, 'updateRevisi'])->name('proposal.revisi');
 
     // Download surat pemberitahuan
     Route::get('/proposal/download-surat/{id}', [ProposalController::class, 'downloadSurat'])->name('proposal.download-surat');

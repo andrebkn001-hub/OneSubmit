@@ -70,30 +70,42 @@ class ProposalController extends Controller
     /**
      * Update proposal for revision (re-upload).
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function updateRevisi(Request $request, int $id): RedirectResponse
     {
         try {
-            $this->proposalService->validateProposalData($request, true);
+            // Validasi input
+            $request->validate([
+                'judul' => 'required|string|max:255',
+                'bidang_minat' => 'required|string|max:100',
+                'file_proposal' => 'required|file|mimes:pdf,doc,docx|min:200|max:5120',
+            ]);
 
             $proposal = Proposal::findOrFail($id);
 
-            if (!$this->proposalService->userOwnsProposal($proposal, Auth::id()) ||
-                !$this->proposalService->isProposalInRevision($proposal)) {
-                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate proposal ini.');
+            // Cek kepemilikan dan status
+            if ($proposal->user_id !== Auth::id() || $proposal->status !== 'revisi') {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupload revisi proposal ini.');
             }
 
-            $filePath = $this->proposalService->uploadProposalFile($request);
+            // Upload file baru
+            $file = $request->file('file_proposal');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('proposals', $fileName, 'public');
 
-            $this->proposalService->updateProposal($proposal, [
+            // Update proposal
+            $proposal->update([
                 'judul' => $request->judul,
                 'bidang_minat' => $request->bidang_minat,
                 'file_path' => $filePath,
                 'status' => 'menunggu_verifikasi_dosen_kjfd',
                 'revision_message' => null,
-                'rejection_message' => null,
             ]);
 
-            return redirect()->route('mahasiswa.status')->with('success', 'Proposal revisi berhasil diupload dan dikirim kembali ke dosen KJFD untuk verifikasi.');
+            // Set flash message dan status
+            session()->flash('success', 'Revisi proposal berhasil diupload.');
+            session()->flash('revision_uploaded', $proposal->id);
+
+            return redirect()->route('mahasiswa.status');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()

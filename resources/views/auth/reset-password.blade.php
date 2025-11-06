@@ -1,17 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password | OneSubmit</title>
-    @vite(['resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .logo-text {
+            color: #0d6efd;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #6c757d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-label {
+            color: #212529;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .password-toggle {
+            position: relative;
+        }
+        .password-toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .password-toggle-btn:hover {
+            color: #0d6efd;
+        }
+    </style>
 </head>
-<body class="bg-light d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow-lg p-4" style="width: 400px;">
-        <div class="text-center mb-4">
-            <h3 class="fw-bold text-primary">OneSubmit</h3>
-            <p class="text-muted mb-0">Reset Kata Sandi</p>
-        </div>
+<body>
+    <div class="login-card">
+        <div class="logo-text">OneSubmit</div>
+        <div class="subtitle">Buat Password Baru</div>
 
         <form method="POST" action="{{ route('password.store') }}">
             @csrf
@@ -19,40 +93,89 @@
             <!-- Password Reset Token -->
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
+            <!-- Email Address -->
             <div class="mb-3">
                 <label for="email" class="form-label">Alamat Email</label>
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                       name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username">
+                <input type="email" 
+                       class="form-control @error('email') is-invalid @enderror" 
+                       id="email" 
+                       name="email" 
+                       value="{{ old('email', $request->email) }}" 
+                       required 
+                       autofocus
+                       readonly
+                       style="background-color: #e9ecef;">
                 @error('email')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
                 @enderror
             </div>
 
+            <!-- Password -->
             <div class="mb-3">
-                <label for="password" class="form-label">Kata Sandi</label>
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                       name="password" required autocomplete="new-password">
+                <label for="password" class="form-label">Password Baru</label>
+                <div class="password-toggle">
+                    <input type="password" 
+                           class="form-control @error('password') is-invalid @enderror" 
+                           id="password" 
+                           name="password" 
+                           required
+                           placeholder="Minimal 8 karakter">
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">
+                        <i class="bi bi-eye" id="password-icon"></i>
+                    </button>
+                </div>
                 @error('password')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">
+                        {{ $message }}
+                    </div>
                 @enderror
             </div>
 
+            <!-- Confirm Password -->
             <div class="mb-3">
-                <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi</label>
-                <input id="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
-                       name="password_confirmation" required autocomplete="new-password">
+                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                <div class="password-toggle">
+                    <input type="password" 
+                           class="form-control @error('password_confirmation') is-invalid @enderror" 
+                           id="password_confirmation" 
+                           name="password_confirmation" 
+                           required
+                           placeholder="Ulangi password baru">
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('password_confirmation')">
+                        <i class="bi bi-eye" id="password_confirmation-icon"></i>
+                    </button>
+                </div>
                 @error('password_confirmation')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">
+                        {{ $message }}
+                    </div>
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Reset Kata Sandi</button>
-
-            <div class="text-center mt-3">
-                <span class="text-muted">Ingat kata sandi Anda?</span>
-                <a href="{{ route('login') }}" class="text-decoration-none">Kembali ke Login</a>
-            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-2"></i>Reset Password
+            </button>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+    </script>
 </body>
 </html>

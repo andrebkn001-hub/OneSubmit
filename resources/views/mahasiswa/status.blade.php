@@ -83,11 +83,22 @@
                         {{-- ✅ Tombol lihat file --}}
                         <td>
                             @if ($proposal->file_path)
-                                <a href="{{ route('mahasiswa.proposal.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-primary">
+                                <a href="{{ route('mahasiswa.proposal.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-primary me-2">
                                     Lihat File
                                 </a>
                             @else
                                 <span class="text-muted">Tidak ada file</span>
+                            @endif
+
+                            {{-- Jika mahasiswa baru saja mengupload revisi, tampilkan keterangan; jika masih berstatus revisi, tampilkan tombol upload --}}
+                            @if(session('revision_uploaded') == $proposal->id)
+                                <div class="alert alert-success py-2 px-3 mb-0">
+                                    <i class="fas fa-check-circle me-1"></i> Revisi telah diupload
+                                </div>
+                            @elseif($proposal->status === 'revisi')
+                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#uploadModal{{ $proposal->id }}">
+                                    <i class="fas fa-upload me-1"></i> Upload Revisi
+                                </button>
                             @endif
                         </td>
 
@@ -99,7 +110,7 @@
                                         <h5 class="modal-title" id="uploadModalLabel{{ $proposal->id }}">Upload Revisi Proposal: {{ $proposal->judul }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('mahasiswa.proposal.update', $proposal->id) }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('mahasiswa.proposal.revisi', ['id' => $proposal->id]) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="modal-body">
                                             <div class="mb-3">

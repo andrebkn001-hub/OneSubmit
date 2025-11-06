@@ -1,7 +1,7 @@
-- Update resources/views/auth/reset-password.blade.php to match login page style:
-  - Replace Breeze components with full HTML and Bootstrap classes
-  - Translate labels to Indonesian (Alamat Email, Kata Sandi, Konfirmasi Kata Sandi, Reset Kata Sandi)
-  - Structure with centered card layout
-  - Include hidden token field
-  - Add link back to login page
-  - Handle validation errors with Bootstrap
+- [x] Update resources/views/auth/reset-password.blade.php to match login page style:
+  - [x] Replace Breeze components with full HTML and Bootstrap classes
+  - [x] Translate labels to Indonesian (Alamat Email, Kata Sandi, Konfirmasi Kata Sandi, Reset Kata Sandi)
+  - [x] Structure with centered card layout
+  - [x] Include hidden token field
+  - [x] Add link back to login page
+  - [x] Handle validation errors with Bootstrap

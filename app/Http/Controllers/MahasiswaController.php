@@ -34,7 +34,8 @@ class MahasiswaController extends Controller
                 'nim' => 'required|string|max:20',
                 'judul' => 'required|string|max:255',
                 'bidang_minat' => 'required|string|max:100',
-                'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:2048',
+                // file size rules are in kilobytes. min:200 => 200 KB, max:5120 => 5 MB
+                'file_proposal' => 'required|file|mimes:pdf,doc,docx|min:200|max:5120',
             ]);
 
             $filePath = $this->proposalService->uploadProposalFile($request);
@@ -62,13 +63,7 @@ class MahasiswaController extends Controller
      */
     public function status(Request $request): View
     {
-        $query = Proposal::where('user_id', Auth::id());
-
-        if ($request->has('nim') && !empty($request->nim)) {
-            $query->where('nim', 'like', '%' . $request->nim . '%');
-        }
-
-        $proposals = $query->latest()->get();
+        $proposals = Proposal::where('user_id', Auth::id())->latest()->get();
 
         return view('mahasiswa.status', compact('proposals'));
     }

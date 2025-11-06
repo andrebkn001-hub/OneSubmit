@@ -23,28 +23,6 @@
                     <a href="{{ route('mahasiswa.proposal.create') }}" class="btn btn-primary">Ajukan Proposal Sekarang</a>
                 </div>
             @else
-                <!-- Form Pencarian -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <form method="GET" action="{{ route('mahasiswa.status') }}" class="row g-3">
-                            <div class="col-12 col-md-8">
-                                <label for="nim" class="form-label">Cari berdasarkan NIM</label>
-                                <input type="text" id="nim" name="nim" class="form-control" placeholder="Masukkan NIM..." value="{{ request('nim') }}">
-                            </div>
-                            <div class="col-12 col-md-4 d-flex align-items-end">
-                                <button class="btn btn-primary me-2" type="submit">
-                                    <i class="fas fa-search"></i> Cari
-                                </button>
-                                @if(request('nim'))
-                                    <a href="{{ route('mahasiswa.status') }}" class="btn btn-secondary">
-                                        <i class="fas fa-times"></i> Reset
-                                    </a>
-                                @endif
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
                 <!-- Table Container -->
                 <div class="card">
                     <div class="card-header">
@@ -141,6 +119,7 @@
                                             <div class="mb-3">
                                                 <label for="file_proposal_{{ $proposal->id }}" class="form-label">Unggah Berkas Proposal Baru</label>
                                                 <input type="file" class="form-control" id="file_proposal_{{ $proposal->id }}" name="file_proposal" accept=".pdf,.doc,.docx" required>
+                                                <div class="form-text">min size proposal 200 KB, maks 5120 KB</div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">

@@ -62,7 +62,12 @@
             </li>
             <li>
                 <a href="{{ route('admin.proposals.index') }}" class="text-white d-block py-2 px-3">
-                    <i class="bi bi-folder2-open"></i> Kelola Data
+                    <i class="bi bi-folder2-open"></i> Kelola Proposal
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.students.index') }}" class="text-white d-block py-2 px-3">
+                    <i class="bi bi-people"></i> Daftar Mahasiswa
                 </a>
             </li>
             <li>

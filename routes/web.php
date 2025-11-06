@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalController;
-use App\Http\Controllers\AdminProposalController; // Dipindahkan ke atas
+use App\Http\Controllers\AdminProposalController;
+use App\Http\Controllers\AdminStudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,12 +64,25 @@ Route::middleware('auth')->group(function () {
 // ADMIN ROUTES
 // ==========================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+    Route::get('/dashboard', function () {
+        // Hitung jumlah proposal per bidang minat
+        $counts = \App\Models\Proposal::select('bidang_minat', \DB::raw('count(*) as total'))
+                    ->groupBy('bidang_minat')
+                    ->orderBy('bidang_minat')
+                    ->get()
+                    ->pluck('total', 'bidang_minat');
+
+        return view('admin.dashboard', compact('counts'));
+    })->name('dashboard');
+    
+    // Proposal routes
     Route::get('/proposals', [AdminProposalController::class, 'index'])->name('proposals.index');
     Route::post('/proposals/{id}/approve', [AdminProposalController::class, 'approve'])->name('proposals.approve');
     Route::post('/proposals/{id}/reject', [AdminProposalController::class, 'reject'])->name('proposals.reject');
-    //KOREKSI: Panggil Controller Admin
-    Route::get('/proposals/view-file/{id}', [\App\Http\Controllers\AdminProposalController::class, 'viewFile'])->name('proposals.view-file');
+    Route::get('/proposals/view-file/{id}', [AdminProposalController::class, 'viewFile'])->name('proposals.view-file');
+    
+    // Student accounts routes
+    Route::get('/students', [AdminStudentController::class, 'index'])->name('students.index');
 });
 
 // ==========================

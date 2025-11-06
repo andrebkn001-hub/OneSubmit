@@ -74,7 +74,7 @@
                         @endif
                     </td>
                     <td>
-                        @if (strtolower($proposal->status) == 'menunggu verifikasi')
+                        @if (strtolower($proposal->status) == 'menunggu_verifikasi')
                             <form action="{{ route('admin.proposals.approve', $proposal->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm">Teruskan ke KJFD</button>

@@ -20,7 +20,8 @@ class ProposalService
             'nim' => 'required|string|max:20',
             'judul' => 'required|string|max:255',
             'bidang_minat' => 'required|string|max:100',
-            'file_proposal' => $isUpdate ? 'required|file|mimes:pdf,doc,docx|max:2048' : 'required|file|mimes:pdf,doc,docx|max:2048',
+            // file size rules are in kilobytes. min:200 => 200 KB, max:5120 => 5 MB
+            'file_proposal' => $isUpdate ? 'required|file|mimes:pdf,doc,docx|min:200|max:5120' : 'required|file|mimes:pdf,doc,docx|min:200|max:5120',
         ];
 
         return $request->validate($rules);

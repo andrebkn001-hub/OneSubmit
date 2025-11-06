@@ -18,12 +18,12 @@
         @csrf
         <div class="mb-3">
             <label class="form-label">Nama Lengkap</label>
-            <input type="text" class="form-control" value="{{ Auth::user()->name }}" readonly>
+            <input type="text" name="nama_lengkap" class="form-control" value="{{ Auth::user()->name }}" readonly>
         </div>
 
         <div class="mb-3">
             <label class="form-label">NIM</label>
-            <input type="text" name="nim" class="form-control" required>
+            <input type="text" name="nim" class="form-control" value="{{ Auth::user()->nim }}" readonly required>
         </div>
 
         <div class="mb-3">
@@ -45,6 +45,7 @@
         <div class="mb-3">
             <label class="form-label">Unggah Berkas Proposal</label>
             <input type="file" name="file_proposal" accept=".pdf,.doc,.docx" class="form-control" required>
+            <div class="form-text">min size proposal 200 KB, maks 5120 KB</div>
         </div>
 
         <button type="submit" class="btn btn-primary">Kirim Proposal</button>

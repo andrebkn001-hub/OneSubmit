@@ -3,29 +3,39 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Judul Proposal Skripsi Mahasiswa - Sistem OneSubmit</title>
+    <title>Dosen dan Staff - Sistem OneSubmit</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('search');
+            const searchJabatanInput = document.getElementById('search-jabatan');
+            const searchNamaInput = document.getElementById('search-nama');
             const tableRows = document.querySelectorAll('tbody tr');
 
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
+            function filterTable() {
+                const jabatanTerm = searchJabatanInput.value.toLowerCase();
+                const namaTerm = searchNamaInput.value.toLowerCase();
 
                 tableRows.forEach(row => {
-                    const titleCell = row.cells[1]; // Judul Proposal column
-                    const title = titleCell.textContent.toLowerCase();
+                    const namaCell = row.cells[1]; // Nama column
+                    const jabatanCell = row.cells[2]; // Jabatan Fungsional column
+                    const nama = namaCell.textContent.toLowerCase();
+                    const jabatan = jabatanCell.textContent.toLowerCase();
 
-                    if (title.includes(searchTerm)) {
+                    const matchesJabatan = jabatan.includes(jabatanTerm);
+                    const matchesNama = nama.includes(namaTerm);
+
+                    if (matchesJabatan && matchesNama) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
                     }
                 });
-            });
+            }
+
+            searchJabatanInput.addEventListener('input', filterTable);
+            searchNamaInput.addEventListener('input', filterTable);
         });
     </script>
 </head>
@@ -70,23 +80,41 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Page Header -->
             <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-gray-900 mb-4">Judul Proposal Skripsi Mahasiswa</h1>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Dosen dan Staff</h1>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Daftar judul proposal skripsi yang telah disetujui di Program Studi Sistem Informasi Universitas Riau.
+                    Susunan Organisasi Jurusan Ilmu Komputer FMIPA Universitas Riau
                 </p>
             </div>
 
             <!-- Search Section -->
             <div class="mb-8">
-                <div class="max-w-md mx-auto">
-                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Cari Judul Proposal</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Search by Name -->
+                        <div>
+                            <label for="search-nama" class="block text-sm font-medium text-gray-700 mb-2">Cari Berdasarkan Nama</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="search-nama" name="search-nama" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="Ketik nama...">
+                            </div>
                         </div>
-                        <input type="text" id="search" name="search" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="Ketik judul proposal...">
+
+                        <!-- Search by Jabatan Fungsional -->
+                        <div>
+                            <label for="search-jabatan" class="block text-sm font-medium text-gray-700 mb-2">Cari Berdasarkan Jabatan Fungsional</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="search-jabatan" name="search-jabatan" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="Ketik jabatan fungsional...">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,54 +122,50 @@
             <!-- Table Section -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-900">Daftar Judul Skripsi</h2>
-                    <p class="text-sm text-gray-600 mt-1">Total: {{ $approvedProposals->count() }} judul</p>
+                    <h2 class="text-xl font-semibold text-gray-900">Susunan Organisasi</h2>
+                    <p class="text-sm text-gray-600 mt-1">Total: {{ count($dosenStaff) }} orang</p>
                 </div>
 
-                @if($approvedProposals->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gradient-to-r from-blue-600 to-purple-600">
-                                <tr>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                        No
-                                    </th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                        Judul Proposal
-                                    </th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                        Bidang Minat
-                                    </th>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gradient-to-r from-blue-600 to-purple-600">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                    No
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                    Nama
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                    Jabatan Fungsional
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                    NIP
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($dosenStaff as $index => $person)
+                                <tr class="hover:bg-blue-50 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 bg-gray-50">
+                                        {{ $index + 1 }}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 font-medium leading-relaxed">
+                                        {{ $person['nama'] }}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200">
+                                            {{ $person['jabatan'] }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $person['nip'] }}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($approvedProposals as $index => $proposal)
-                                    <tr class="hover:bg-blue-50 transition-colors duration-200">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 bg-gray-50">
-                                            {{ $index + 1 }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium leading-relaxed">
-                                            {{ $proposal->judul }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200">
-                                                {{ $proposal->bidang_minat }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="px-6 py-12 text-center">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada judul skripsi disetujui</h3>
-                        <p class="mt-1 text-sm text-gray-500">Saat ini belum ada proposal skripsi yang telah disetujui.</p>
-                    </div>
-                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Back Button -->

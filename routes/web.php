@@ -26,6 +26,7 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/judul-skripsi', [App\Http\Controllers\MahasiswaController::class, 'judulSkripsi'])->name('judul-skripsi');
+Route::get('/dosen-staff', [App\Http\Controllers\MahasiswaController::class, 'dosenStaff'])->name('dosen-staff');
 
 /*
 |--------------------------------------------------------------------------
@@ -81,13 +82,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
         return view('admin.dashboard', compact('counts'));
     })->name('dashboard');
-    
+
     // Proposal routes
     Route::get('/proposals', [AdminProposalController::class, 'index'])->name('proposals.index');
     Route::post('/proposals/{id}/approve', [AdminProposalController::class, 'approve'])->name('proposals.approve');
     Route::post('/proposals/{id}/reject', [AdminProposalController::class, 'reject'])->name('proposals.reject');
     Route::get('/proposals/view-file/{id}', [AdminProposalController::class, 'viewFile'])->name('proposals.view-file');
-    
+
     // Student accounts routes
     Route::get('/students', [AdminStudentController::class, 'index'])->name('students.index');
     Route::delete('/students/{id}', [AdminStudentController::class, 'destroy'])->name('students.destroy');

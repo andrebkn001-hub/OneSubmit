@@ -94,6 +94,72 @@
             </div>
         </div>
     </div>
+
+    <!-- Kuota per KJFD -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Kuota Proposal per Bidang KJFD</h5>
+                    <small class="text-muted">Batas kuota per bidang : <strong>50</strong> proposal</small>
+                </div>
+                <div class="card-body">
+                    @php
+                        $kjfdBidang = [
+                            'KJFD Business Intelligence',
+                            'KJFD Data Engineering',
+                            'KJFD Information Management',
+                            'KJFD Information Retrieval'
+                        ];
+                        $kjfdList = \App\Models\User::where('role', 'dosen_kjfd')
+                            ->whereIn('name', $kjfdBidang)
+                            ->orderBy('name')
+                            ->get();
+                    @endphp
+
+                    @if($kjfdList->isEmpty())
+                        <div class="alert alert-info">Belum ada data Dosen KJFD.</div>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Dosen KJFD</th>
+                                        <th class="text-center">Kuota</th>
+                                        <th class="text-center">Sudah ACC</th>
+                                        <th class="text-center">Sisa Kuota</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($kjfdList as $kjfd)
+                                        @php
+                                            $accepted = \App\Models\Proposal::where('dosen_kjfd_id', $kjfd->id)
+                                                ->where('status', 'disetujui')
+                                                ->count();
+                                            $limit = 50;
+                                            $remaining = max(0, $limit - $accepted);
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $kjfd->name }}</td>
+                                            <td class="text-center"><span class="badge bg-secondary">{{ $limit }}</span></td>
+                                            <td class="text-center"><span class="badge bg-success">{{ $accepted }}</span></td>
+                                            <td class="text-center">
+                                                @if($remaining > 0)
+                                                    <span class="badge bg-info">{{ $remaining }}</span>
+                                                @else
+                                                    <span class="badge bg-danger">Penuh</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Font Awesome for icons -->

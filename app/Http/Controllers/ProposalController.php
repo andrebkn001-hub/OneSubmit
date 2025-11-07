@@ -114,9 +114,43 @@ class ProposalController extends Controller
     }
 
     /**
+     * Download surat ACC proposal.
+     */
+    public function downloadAccLetter(int $id)
+    {
+        try {
+            $proposal = Proposal::findOrFail($id);
+
+            // Verifikasi kepemilikan dan status
+            if (!$this->proposalService->userOwnsProposal($proposal, Auth::id()) || 
+                $proposal->status !== 'disetujui' || 
+                !$proposal->acc_letter_path) {
+                abort(403, 'Anda tidak memiliki akses ke surat ACC ini.');
+            }
+
+            // Verifikasi keberadaan file
+            if (!Storage::disk('public')->exists($proposal->acc_letter_path)) {
+                abort(404, 'File surat ACC tidak ditemukan.');
+            }
+
+            // Kirim file ke browser
+            return Storage::disk('public')->response(
+                $proposal->acc_letter_path,
+                'Surat_ACC_' . $proposal->nim . '.pdf',
+                [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="Surat_ACC_' . $proposal->nim . '.pdf"'
+                ]
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunduh surat ACC. Silakan coba lagi.');
+        }
+    }
+
+    /**
      * Download surat pemberitahuan proposal disetujui.
      */
-    public function downloadSurat(int $id): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function downloadSurat(int $id)
     {
         try {
             $proposal = Proposal::findOrFail($id);
@@ -126,14 +160,24 @@ class ProposalController extends Controller
                 abort(403, 'Anda tidak memiliki izin untuk mengunduh surat ini.');
             }
 
-            // Generate PDF surat pemberitahuan
-            $pdf = $this->generateSuratPemberitahuan($proposal);
+            if (!$proposal->acc_letter_path) {
+                return redirect()->back()->with('error', 'Surat ACC belum tersedia.');
+            }
 
-            $filename = 'surat_pemberitahuan_' . $proposal->nim . '_' . now()->format('Y-m-d') . '.pdf';
+            // Verifikasi keberadaan file
+            if (!Storage::disk('public')->exists($proposal->acc_letter_path)) {
+                return redirect()->back()->with('error', 'File surat ACC tidak ditemukan.');
+            }
 
-            return response()->streamDownload(function () use ($pdf) {
-                echo $pdf->output();
-            }, $filename);
+            // Kirim file ke browser
+            return Storage::disk('public')->response(
+                $proposal->acc_letter_path,
+                'Surat_ACC_' . $proposal->nim . '.pdf',
+                [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="Surat_ACC_' . $proposal->nim . '.pdf"'
+                ]
+            );
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunduh surat. Silakan coba lagi.');

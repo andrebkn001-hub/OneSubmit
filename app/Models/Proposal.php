@@ -21,6 +21,7 @@ class Proposal extends Model
         'dosen_kjfd_id',
         'revision_message',
         'rejection_message',
+        'acc_letter_path',
     ];
 
     protected $casts = [

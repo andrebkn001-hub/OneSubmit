@@ -83,6 +83,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Student accounts routes
     Route::get('/students', [AdminStudentController::class, 'index'])->name('students.index');
+    Route::delete('/students/{id}', [AdminStudentController::class, 'destroy'])->name('students.destroy');
+
+    // Kuota KJFD routes (Admin)
+    Route::get('/quotas', [\App\Http\Controllers\AdminQuotaController::class, 'index'])->name('quotas.index');
+    Route::get('/quotas/{id}/edit', [\App\Http\Controllers\AdminQuotaController::class, 'edit'])->name('quotas.edit');
+    Route::post('/quotas/{id}', [\App\Http\Controllers\AdminQuotaController::class, 'update'])->name('quotas.update');
 });
 
 // ==========================
@@ -103,8 +109,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     // Update proposal untuk revisi
     Route::post('/proposal/{id}/revisi', [ProposalController::class, 'updateRevisi'])->name('proposal.revisi');
 
-    // Download surat pemberitahuan
+    // Download surat pemberitahuan dan surat ACC
     Route::get('/proposal/download-surat/{id}', [ProposalController::class, 'downloadSurat'])->name('proposal.download-surat');
+    Route::get('/proposal/download-acc/{id}', [ProposalController::class, 'downloadAccLetter'])->name('proposal.download-acc');
 
     // View file proposal
     Route::get('/proposal/view-file/{id}', [ProposalController::class, 'viewFile'])->name('proposal.view-file');

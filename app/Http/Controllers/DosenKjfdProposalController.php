@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage; // <<< DITAMBAHKAN: Diperlukan untuk mengirim file
+use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DosenKjfdProposalController extends Controller
 {
@@ -53,13 +55,34 @@ class DosenKjfdProposalController extends Controller
                 return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menyetujui proposal ini.');
             }
 
-            $this->proposalService->updateProposal($proposal, [
-                'status' => 'disetujui',
+            // Generate surat ACC
+            $pdf = Pdf::loadView('pdf.acc-letter', [
+                'proposal' => $proposal,
+                'tanggal' => now()->translatedFormat('d F Y'),
+                'dosenKjfd' => Auth::user(),
             ]);
 
-            return redirect()->back()->with('success', 'Proposal berhasil disetujui.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyetujui proposal. Silakan coba lagi.');
+            // Simpan file PDF
+            $accLetterPath = 'acc-letters/' . $proposal->nim . '_' . now()->format('Ymd_His') . '.pdf';
+            Storage::disk('public')->put($accLetterPath, $pdf->output());
+
+            // Update proposal dengan status dan path surat ACC
+            $this->proposalService->updateProposal($proposal, [
+                'status' => 'disetujui',
+                'acc_letter_path' => $accLetterPath
+            ]);
+
+            return redirect()->back()->with('success', 'Proposal berhasil disetujui dan surat ACC telah dibuat.');
+    } catch (\Exception $e) {
+            // Catat error detail ke log untuk debugging
+            Log::error('Error saat approve proposal id=' . $id . ' oleh dosen KJFD id=' . Auth::id() . ': ' . $e->getMessage(), [
+                'exception' => $e,
+                'proposal_id' => $id,
+                'dosen_id' => Auth::id(),
+            ]);
+
+            // Kembalikan pesan error yang lebih informatif ke UI sementara (tanpa stacktrace)
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyetujui proposal: ' . $e->getMessage());
         }
     }
 

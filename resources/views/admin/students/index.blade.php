@@ -16,6 +16,7 @@
                                     <th>Nama Lengkap</th>
                                     <th>NIM</th>
                                     <th>Email</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -25,6 +26,15 @@
                                         <td>{{ $student->name }}</td>
                                         <td>{{ $student->nim }}</td>
                                         <td>{{ $student->email }}</td>
+                                        <td>
+                                            <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun mahasiswa ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>

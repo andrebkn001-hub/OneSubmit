@@ -84,10 +84,16 @@
                         <td>
                             @if ($proposal->file_path)
                                 <a href="{{ route('mahasiswa.proposal.view-file', $proposal->id) }}" target="_blank" class="btn btn-sm btn-primary me-2">
-                                    Lihat File
+                                    <i class="bi bi-file-earmark-text"></i> Proposal
                                 </a>
                             @else
                                 <span class="text-muted">Tidak ada file</span>
+                            @endif
+
+                            @if ($proposal->acc_letter_path && $proposal->status === 'disetujui')
+                                <a href="{{ route('mahasiswa.proposal.download-acc', $proposal->id) }}" target="_blank" class="btn btn-sm btn-success">
+                                    <i class="bi bi-file-earmark-check"></i> Surat ACC
+                                </a>
                             @endif
 
                             {{-- Jika mahasiswa baru saja mengupload revisi, tampilkan keterangan; jika masih berstatus revisi, tampilkan tombol upload --}}

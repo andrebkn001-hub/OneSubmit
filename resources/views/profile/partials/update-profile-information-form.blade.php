@@ -55,17 +55,16 @@
         </div>
 
         <div class="d-flex align-items-center gap-3 mt-4">
-            {{-- Tombol "Save" Biru Solid --}}
-            <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
+            {{-- Tombol "Save" Biru Solid dengan icon --}}
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>{{ __('Save') }}
+            </button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-success"
-                >{{ __('Saved.') }}</p>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> Profil berhasil diperbarui!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @endif
         </div>
     </form>

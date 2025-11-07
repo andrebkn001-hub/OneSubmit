@@ -71,6 +71,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.quotas.index') }}" class="text-white d-block py-2 px-3">
+                    <i class="bi bi-sliders"></i> Kelola Kuota
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('profile.edit') }}" class="text-white d-block py-2 px-3">
                     <i class="bi bi-person"></i> Profil
                 </a>

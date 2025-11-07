@@ -104,6 +104,19 @@ class MahasiswaController extends Controller
     }
 
     /**
+     * Display halaman pencarian judul skripsi yang disetujui.
+     */
+    public function judulSkripsi(): View
+    {
+        $approvedProposals = Proposal::where('status', 'disetujui')
+            ->select('judul', 'bidang_minat')
+            ->orderBy('judul')
+            ->get();
+
+        return view('judul-skripsi', compact('approvedProposals'));
+    }
+
+    /**
      * Download file from layanan.
      */
     public function downloadLayanan(string $file)

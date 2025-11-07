@@ -5,3 +5,11 @@
   - [x] Include hidden token field
   - [x] Add link back to login page
   - [x] Handle validation errors with Bootstrap
+
+- [x] Tambahkan fitur "Layanan" pada menu mahasiswa:
+  - [x] Buat folder public/layanan/skripsi/ dan placeholder file (6 file .txt)
+  - [x] Tambah link "Layanan" di sidebar layouts/app.blade.php
+  - [x] Tambah route 'mahasiswa.layanan' dan 'mahasiswa.layanan.download' di routes/web.php
+  - [x] Tambah method layanan() dan downloadLayanan() di MahasiswaController.php
+  - [x] Buat view resources/views/mahasiswa/layanan.blade.php dengan tabel 6 item dan tombol download
+  - [x] Test fitur setelah implementasi

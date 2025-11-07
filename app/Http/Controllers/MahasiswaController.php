@@ -67,4 +67,66 @@ class MahasiswaController extends Controller
 
         return view('mahasiswa.status', compact('proposals'));
     }
+
+    /**
+     * Display layanan page for mahasiswa.
+     */
+    public function layanan(): View
+    {
+        $files = [
+            [
+                'name' => 'PEDOMAN SKRIPSI PRODI SISTEM INFORMASI',
+                'filename' => 'pedoman_skripsi_prodi_sistem_informasi.pdf'
+            ],
+            [
+                'name' => 'PEDOMAN SKRIPSI PRODI SISTEM INFORMASI (TAMBAHAN)',
+                'filename' => 'pedoman_skripsi_prodi_sistem_informasi_tambahan.pdf'
+            ],
+            [
+                'name' => 'PEDOMAN PROSEDUR PENULISAN SKRIPSI',
+                'filename' => 'pedoman_prosedur_penulisan_skripsi.pdf'
+            ],
+            [
+                'name' => 'PEDOMAN PROSEDUR PENULISAN SKRIPSI (FLOWCHART)',
+                'filename' => 'pedoman_prosedur_penulisan_skripsi_flowchart.pdf'
+            ],
+            [
+                'name' => 'SYARAT PROPOSAL SKRIPSI',
+                'filename' => 'syarat_proposal_skripsi.pdf'
+            ],
+            [
+                'name' => 'TEMPLATE PROPOSAL SKRIPSI',
+                'filename' => 'template_proposal_skripsi.pdf'
+            ],
+        ];
+
+        return view('mahasiswa.layanan', compact('files'));
+    }
+
+    /**
+     * Download file from layanan.
+     */
+    public function downloadLayanan(string $file)
+    {
+        $allowedFiles = [
+            'pedoman_skripsi_prodi_sistem_informasi.pdf',
+            'pedoman_skripsi_prodi_sistem_informasi_tambahan.pdf',
+            'pedoman_prosedur_penulisan_skripsi.pdf',
+            'pedoman_prosedur_penulisan_skripsi_flowchart.pdf',
+            'syarat_proposal_skripsi.pdf',
+            'template_proposal_skripsi.pdf'
+        ];
+
+        if (!in_array($file, $allowedFiles)) {
+            abort(404);
+        }
+
+        $path = public_path('layanan/skripsi/' . $file);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->download($path);
+    }
 }

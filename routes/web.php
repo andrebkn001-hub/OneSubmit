@@ -96,7 +96,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // ==========================
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', fn() => view('mahasiswa.dashboard'))->name('dashboard');
-    
+
     // Form pengajuan proposal
     Route::get('/proposal/create', [ProposalController::class, 'create'])->name('proposal.create');
 
@@ -115,6 +115,10 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 
     // View file proposal
     Route::get('/proposal/view-file/{id}', [ProposalController::class, 'viewFile'])->name('proposal.view-file');
+
+    // Layanan
+    Route::get('/layanan', [App\Http\Controllers\MahasiswaController::class, 'layanan'])->name('layanan');
+    Route::get('/layanan/download/{file}', [App\Http\Controllers\MahasiswaController::class, 'downloadLayanan'])->name('layanan.download');
 });
 
 // ==========================

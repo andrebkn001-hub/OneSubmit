@@ -116,6 +116,7 @@
         @if(Auth::user()->role == 'mahasiswa')
             <a href="{{ route('mahasiswa.proposal.create') }}"><i class="bi bi-send"></i> Ajukan Proposal</a>
             <a href="{{ route('mahasiswa.status') }}"><i class="bi bi-envelope-paper"></i> Status Proposal</a>
+            <a href="{{ route('mahasiswa.layanan') }}"><i class="bi bi-file-earmark-text"></i> Layanan</a>
         @endif
 
         @if(Auth::user()->role == 'admin')

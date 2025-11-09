@@ -20,7 +20,7 @@
                 <div class="flex flex-col">
                     <div class="flex items-center space-x-2">
                         <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo" class="h-[52px] xs:h-[62px] sm:h-[73px] align-middle">
-                        <h1 class="text-sm xs:text-base sm:text-lg md:text-xl font-bold text-gray-900">Sistem OneSubmit</h1>
+                        <a href="{{ url('/') }}" class="text-sm xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">Sistem OneSubmit</a>
                     </div>
                     <p class="hidden xs:block text-xs xs:text-sm text-gray-600">Universitas Riau</p>
                 </div>

@@ -1,54 +1,268 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <h3 class="mb-3">Pengajuan Proposal</h3>
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="text-center">
+                <h1 class="display-4 fw-bold text-primary mb-3" style="color: #1e90ff !important;">
+                    <i class="bi bi-file-earmark-plus-fill me-3"></i>Pengajuan Proposal
+                </h1>
+                <p class="lead text-muted">Ajukan proposal tugas akhir Anda dengan lengkap dan mudah</p>
+                <div class="mt-4">
+                    <img src="{{ asset('images/unri.png') }}" alt="UNRI Logo" class="img-fluid" style="height: 60px; opacity: 0.8;">
+                </div>
+            </div>
         </div>
-    @endif
+    </div>
 
-    <form action="{{ route('mahasiswa.proposal.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="mb-3">
-            <label class="form-label">Nama Lengkap</label>
-            <input type="text" name="nama_lengkap" class="form-control" value="{{ Auth::user()->name }}" readonly>
+    <!-- Main Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 20px; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);">
+                <div class="card-header border-0" style="background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); border-radius: 20px 20px 0 0 !important; color: white;">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clipboard-data-fill fs-4 me-3"></i>
+                        <div>
+                            <h4 class="mb-0 fw-bold">Form Pengajuan Proposal</h4>
+                            <small class="opacity-75">Lengkapi data proposal tugas akhir Anda</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-5">
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('mahasiswa.proposal.store') }}" method="POST" enctype="multipart/form-data" id="proposalForm">
+                        @csrf
+
+                        <!-- Personal Information Section -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-4" style="color: #1976d2 !important;">
+                                <i class="bi bi-person-circle me-2"></i>Informasi Pribadi
+                            </h5>
+
+                            <div class="row g-4">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control bg-light" id="nama_lengkap" name="nama_lengkap"
+                                               value="{{ Auth::user()->name }}" readonly
+                                               style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                        <label for="nama_lengkap" class="text-muted">
+                                            <i class="bi bi-person-fill me-1"></i>Nama Lengkap
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control bg-light" id="nim" name="nim"
+                                               value="{{ Auth::user()->nim ?? '' }}" readonly
+                                               style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                        <label for="nim" class="text-muted">
+                                            <i class="bi bi-upc-scan me-1"></i>NIM
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Proposal Information Section -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-4" style="color: #1976d2 !important;">
+                                <i class="bi bi-file-earmark-text-fill me-2"></i>Informasi Proposal
+                            </h5>
+
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="judul" name="judul"
+                                               placeholder="Masukkan judul proposal Anda" required
+                                               style="border-radius: 10px; border: 2px solid #e9ecef; transition: all 0.3s ease;"
+                                               onfocus="this.style.borderColor='#1976d2'; this.style.boxShadow='0 0 0 0.2rem rgba(25, 118, 210, 0.25)';"
+                                               onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none';">
+                                        <label for="judul" class="text-muted">
+                                            <i class="bi bi-type-bold me-1"></i>Judul Proposal
+                                        </label>
+                                    </div>
+                                    @error('judul')
+                                        <div class="text-danger small mt-1">
+                                            <i class="bi bi-exclamation-circle me-1"></i>{{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="bidang_minat" name="bidang_minat" required
+                                                style="border-radius: 10px; border: 2px solid #e9ecef; transition: all 0.3s ease;"
+                                                onfocus="this.style.borderColor='#1976d2'; this.style.boxShadow='0 0 0 0.2rem rgba(25, 118, 210, 0.25)';"
+                                                onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none';">
+                                            <option value="">-- Pilih Bidang Minat --</option>
+                                            <option value="Business Intelligence">Business Intelligence</option>
+                                            <option value="Data Engineering">Data Engineering</option>
+                                            <option value="Information Management">Information Management</option>
+                                            <option value="Information Retrieval">Information Retrieval</option>
+                                        </select>
+                                        <label for="bidang_minat" class="text-muted">
+                                            <i class="bi bi-diagram-3 me-1"></i>Bidang Minat
+                                        </label>
+                                    </div>
+                                    @error('bidang_minat')
+                                        <div class="text-danger small mt-1">
+                                            <i class="bi bi-exclamation-circle me-1"></i>{{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- File Upload Section -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-4" style="color: #1976d2 !important;">
+                                <i class="bi bi-cloud-upload-fill me-2"></i>Unggah Berkas Proposal
+                            </h5>
+
+                            <div class="upload-area border-2 border-dashed rounded-3 p-5 text-center"
+                                 style="border-color: #e9ecef !important; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%); transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#1976d2'; this.style.background='linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #e3f2fd 100%)';"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%)';">
+                                <div class="mb-3">
+                                    <i class="bi bi-file-earmark-pdf-fill fs-1 text-primary" style="color: #1976d2 !important;"></i>
+                                </div>
+                                <h6 class="fw-bold text-muted mb-2">Pilih File Proposal</h6>
+                                <p class="text-muted small mb-3">Format: PDF, DOC, DOCX | Ukuran: 200 KB - 5 MB</p>
+
+                                <div class="custom-file-upload">
+                                    <input type="file" class="form-control d-none" id="file_proposal" name="file_proposal"
+                                           accept=".pdf,.doc,.docx" required
+                                           onchange="updateFileName(this)">
+                                    <label for="file_proposal" class="btn btn-primary fw-bold px-4 py-2"
+                                           style="background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); border: none; border-radius: 10px;">
+                                        <i class="bi bi-folder2-open me-2"></i>Pilih File
+                                    </label>
+                                    <div class="file-name-display mt-3">
+                                        <small class="text-muted" id="fileName">No file chosen</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @error('file_proposal')
+                                <div class="text-danger small mt-2">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ $message }}
+                                </div>
+                            @enderror
+
+                            <div class="alert alert-info mt-3 border-0" style="background: linear-gradient(135deg, #cce5ff 0%, #99d6ff 100%); border-radius: 10px;">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <strong>Catatan:</strong> Minimal ukuran file 200 KB, maksimal 5120 KB (5 MB).
+                                Pastikan file dalam format PDF, DOC, atau DOCX.
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-lg fw-bold px-5 py-3" id="submitBtn"
+                                    style="background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); border: none; border-radius: 15px; color: white; transition: all 0.3s ease;">
+                                <i class="bi bi-send-fill me-2"></i>Ajukan Proposal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label">NIM</label>
-            <input type="text" name="nim" class="form-control" value="{{ Auth::user()->nim }}" readonly required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Judul Proposal</label>
-            <input type="text" name="judul" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Bidang Minat</label>
-            <select name="bidang_minat" class="form-select" required>
-                <option value="">-- Pilih Bidang --</option>
-                <option value="Information Management">Information Management</option>
-                <option value="Business Intelligence">Business Intelligence</option>
-                <option value="Data Engineering">Data Engineering</option>
-                <option value="Information Retrieval">Information Retrieval</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Unggah Berkas Proposal</label>
-            <input type="file" name="file_proposal" accept=".pdf,.doc,.docx" class="form-control" required>
-            <div class="form-text">min size proposal 200 KB, maks 5120 KB</div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Kirim Proposal</button>
-    </form>
+    </div>
 </div>
+
+<style>
+.form-floating > .form-control {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 0.65;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.upload-area:hover {
+    cursor: pointer;
+}
+
+.custom-file-upload .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+}
+
+#submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+}
+
+#submitBtn:active {
+    transform: translateY(0);
+}
+
+.alert {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.card {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 2rem !important;
+    }
+
+    .upload-area {
+        padding: 2rem !important;
+    }
+}
+</style>
+
+<script>
+function updateFileName(input) {
+    const fileName = input.files[0] ? input.files[0].name : 'No file chosen';
+    document.getElementById('fileName').textContent = fileName;
+
+    // Add visual feedback
+    const uploadArea = input.closest('.upload-area');
+    if (input.files[0]) {
+        uploadArea.style.borderColor = '#198754';
+        uploadArea.style.background = 'linear-gradient(135deg, #d1ecf1 0%, #a3daff 50%, #d1ecf1 100%)';
+    } else {
+        uploadArea.style.borderColor = '#e9ecef';
+        uploadArea.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%)';
+    }
+}
+
+// Form validation enhancement
+document.getElementById('proposalForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Mengirim...';
+    submitBtn.disabled = true;
+
+    // Re-enable after 3 seconds (in case of error)
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 3000);
+});
+</script>
 @endsection

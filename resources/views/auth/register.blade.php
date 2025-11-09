@@ -18,7 +18,7 @@
         <div class="text-center mb-8">
             <div class="flex items-center justify-center mb-4">
                 <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo" class="h-12 mr-3">
-                <h1 class="text-2xl font-bold text-gray-900">OneSubmit</h1>
+                <a href="{{ url('/') }}" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">OneSubmit</a>
             </div>
             <h2 class="text-lg font-semibold text-gray-700">Buat Akun Baru</h2>
             <p class="text-sm text-gray-600 mt-1">Universitas Riau</p>

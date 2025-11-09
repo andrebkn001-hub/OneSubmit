@@ -8,34 +8,38 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="antialiased bg-gray-50">
+<body class="antialiased bg-gradient-to-br from-sky-400 via-sky-500 to-sky-600" style="background-image: url('{{ asset('images/hero-bg.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-sky-500/80 via-sky-600/60 to-sky-700/80"></div>
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%);"></div>
+    <div class="relative min-h-screen">
     <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo" class="h-12">
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-900">Sistem OneSubmit</h1>
-                        <p class="text-sm text-gray-600">Universitas Riau</p>
+    <header class="bg-white shadow-lg rounded-xl mx-4 sm:mx-8 lg:mx-16 mt-4 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
+                <div class="flex flex-col">
+                    <div class="flex items-center space-x-2">
+                        <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo" class="h-[52px] xs:h-[62px] sm:h-[73px] align-middle">
+                        <h1 class="text-sm xs:text-base sm:text-lg md:text-xl font-bold text-gray-900">Sistem OneSubmit</h1>
                     </div>
+                    <p class="hidden xs:block text-xs xs:text-sm text-gray-600">Universitas Riau</p>
                 </div>
-                <div class="flex space-x-4">
+                <div class="flex flex-wrap justify-center sm:justify-end space-x-1 xs:space-x-2 sm:space-x-4">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
+                        <a href="{{ url('/dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2 xs:py-1 xs:px-3 sm:py-2 sm:px-6 rounded-lg transition duration-300 text-xs xs:text-sm sm:text-base">
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('judul-skripsi') }}" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
+                        <a href="{{ route('judul-skripsi') }}" class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-1 px-2 xs:py-1 xs:px-3 sm:py-2 sm:px-6 rounded-lg transition duration-300 text-xs xs:text-sm sm:text-base">
                             Judul Skripsi
                         </a>
-                        <a href="{{ route('dosen-staff') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
+                        <a href="{{ route('dosen-staff') }}" class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-1 px-2 xs:py-1 xs:px-3 sm:py-2 sm:px-6 rounded-lg transition duration-300 text-xs xs:text-sm sm:text-base">
                             Dosen dan Staff
                         </a>
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
+                        <a href="{{ route('login') }}" class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-1 px-2 xs:py-1 xs:px-3 sm:py-2 sm:px-6 rounded-lg transition duration-300 text-xs xs:text-sm sm:text-base">
                             Masuk
                         </a>
-                        <a href="{{ route('register') }}" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
+                        <a href="{{ route('register') }}" class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-1 px-2 xs:py-1 xs:px-3 sm:py-2 sm:px-6 rounded-lg transition duration-300 text-xs xs:text-sm sm:text-base">
                             Daftar
                         </a>
                     @endauth
@@ -283,5 +287,6 @@
             </div>
         </div>
     </footer>
+    </div>
 </body>
 </html>

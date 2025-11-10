@@ -10,9 +10,6 @@
                     <i class="bi bi-file-earmark-text-fill me-3"></i>Layanan
                 </h1>
                 <p class="lead text-muted">Unduh dokumen pedoman dan template terkait skripsi Program Studi Sistem Informasi</p>
-                <div class="mt-4">
-                    <img src="{{ asset('images/unri.png') }}" alt="UNRI Logo" class="img-fluid" style="height: 60px; opacity: 0.8;">
-                </div>
             </div>
         </div>
     </div>

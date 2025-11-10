@@ -4,101 +4,198 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>OneSubmit</title>
+    <title>OneSubmit - Dashboard Admin</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
         body {
-            background-color: #f8f9fa;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            background-attachment: fixed;
         }
+
         .sidebar {
             height: 100vh;
-            background-color: #212529;
+            width: 280px;
+            background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
             color: white;
-            padding: 1rem;
             position: fixed;
-            width: 250px;
+            left: 0;
+            top: 0;
+            padding-top: 80px;
+            z-index: 999;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
-        .sidebar h4 {
-            color: #fff;
-            margin-bottom: 1rem;
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            margin-bottom: 20px;
         }
+
         .sidebar a {
+            color: white;
+            display: block;
+            padding: 15px 25px;
             text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 5px 15px;
         }
+
         .sidebar a:hover {
-            background-color: #343a40;
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .content {
+            margin-left: 280px;
+            padding: 90px 30px 30px 30px;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        .navbar {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 0;
+                display: none;
+            }
+            .sidebar.show {
+                display: block;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 80px 15px 15px 15px;
+            }
+            .navbar-toggler {
+                display: block;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .navbar-toggler {
+                display: none;
+            }
+        }
+
+        .navbar-toggler {
+            border: none;
+            background: none;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .card {
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
+            border: none;
             border-radius: 8px;
         }
-        .content {
-            margin-left: 250px;
-            padding: 2rem;
-        }
-        .topbar {
-            background-color: #212529;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4682b4 0%, #1e90ff 50%, #4169e1 100%);
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler d-md-none" type="button" onclick="toggleSidebar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo">
+                OneSubmit
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">Dashboard Admin</span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
     <div class="sidebar">
-        <h4><strong>OneSubmit</strong></h4>
-        <p class="fw-bold">Menu</p>
-        <ul class="list-unstyled">
-            <li>
-                <a href="{{ route('admin.dashboard') }}" class="text-white d-block py-2 px-3">
-                    <i class="bi bi-house-door"></i> Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.proposals.index') }}" class="text-white d-block py-2 px-3">
-                    <i class="bi bi-folder2-open"></i> Kelola Proposal
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.students.index') }}" class="text-white d-block py-2 px-3">
-                    <i class="bi bi-people"></i> Daftar Mahasiswa
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.quotas.index') }}" class="text-white d-block py-2 px-3">
-                    <i class="bi bi-sliders"></i> Kelola Kuota
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('profile.edit') }}" class="text-white d-block py-2 px-3">
-                    <i class="bi bi-person"></i> Profil
-                </a>
-            </li>
-        </ul>
+        <div class="sidebar-header">
+            <h5 class="fw-bold mb-1">OneSubmit</h5>
+            <p class="mb-0 opacity-75 small">Menu Admin</p>
+        </div>
+        <a href="{{ route('admin.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
+        <a href="{{ route('admin.proposals.index') }}"><i class="bi bi-folder2-open"></i> Kelola Proposal</a>
+        <a href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i> Daftar Mahasiswa</a>
+        <a href="{{ route('admin.quotas.index') }}"><i class="bi bi-sliders"></i> Kelola Kuota</a>
+        <a href="{{ route('profile.edit') }}"><i class="bi bi-person"></i> Profil</a>
     </div>
 
-    <!-- Main Content -->
     <div class="content">
-        <div class="topbar">
-            <span class="fw-bold">Dashboard Admin</span>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-            </form>
-        </div>
-
-        <div class="mt-4">
-            @yield('content')
-        </div>
+        @yield('content')
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            if (!sidebar.contains(event.target) && !navbarToggler.contains(event.target) && window.innerWidth <= 768) {
+                sidebar.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -10,9 +10,6 @@
                     <i class="bi bi-person-circle me-3"></i>Kelola Profil
                 </h1>
                 <p class="lead text-muted">Kelola informasi akun dan pengaturan keamanan Anda</p>
-                <div class="mt-4">
-                    <img src="{{ asset('images/unri.png') }}" alt="UNRI Logo" class="img-fluid" style="height: 60px; opacity: 0.8;">
-                </div>
             </div>
         </div>
     </div>

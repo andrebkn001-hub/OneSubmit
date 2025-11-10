@@ -10,9 +10,6 @@
                     <i class="bi bi-envelope-paper me-3"></i>Status Proposal Saya
                 </h1>
                 <p class="lead text-muted">Pantau status proposal yang telah Anda ajukan</p>
-                <div class="mt-4">
-                    <img src="{{ asset('images/unri.png') }}" alt="UNRI Logo" class="img-fluid" style="height: 60px; opacity: 0.8;">
-                </div>
             </div>
         </div>
     </div>

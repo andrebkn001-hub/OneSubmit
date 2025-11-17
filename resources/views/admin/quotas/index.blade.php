@@ -9,7 +9,7 @@
     @endif
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table id="quotasTable" class="table table-striped">
             <thead>
                 <tr>
                     <th>Bidang</th>
@@ -42,4 +42,23 @@
 
     <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary mt-3">Kembali</a>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#quotasTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        order: [[0, 'asc']],
+        searching: true,
+        paging: false,
+        info: false,
+        columnDefs: [
+            { orderable: false, targets: [3] }
+        ]
+    });
+});
+</script>
 @endsection

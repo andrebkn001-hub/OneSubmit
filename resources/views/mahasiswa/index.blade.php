@@ -12,7 +12,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <table class="table table-striped table-bordered align-middle">
+        <table id="mahasiswaProposalsTable" class="table table-striped table-bordered align-middle">
             <thead class="table-primary">
                 <tr>
                     <th>Judul</th>
@@ -48,4 +48,20 @@
         </table>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#mahasiswaProposalsTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        order: [[3, 'desc']],
+        columnDefs: [
+            { orderable: false, targets: [1] }
+        ]
+    });
+});
+</script>
 @endsection

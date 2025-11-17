@@ -23,7 +23,7 @@
         </div>
     </form>
 
-    <table class="table table-striped">
+    <table id="proposalsTable" class="table table-striped">
         <thead>
             <tr>
                 <th>No</th>
@@ -118,4 +118,50 @@
         </tbody>
     </table>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#proposalsTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+             '<"row"<"col-sm-12 col-md-6"B>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [
+            {
+                extend: 'excel',
+                text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                className: 'btn btn-danger btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            },
+            {
+                extend: 'print',
+                text: '<i class="bi bi-printer"></i> Print',
+                className: 'btn btn-info btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            }
+        ],
+        pageLength: 10,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [6, 7] }
+        ]
+    });
+});
+</script>
 @endsection

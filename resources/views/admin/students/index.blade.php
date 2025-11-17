@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table id="studentsTable" class="table table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th>No</th>
@@ -49,4 +49,50 @@
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#studentsTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+             '<"row"<"col-sm-12 col-md-6"B>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [
+            {
+                extend: 'excel',
+                text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                className: 'btn btn-danger btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            {
+                extend: 'print',
+                text: '<i class="bi bi-printer"></i> Print',
+                className: 'btn btn-info btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            }
+        ],
+        pageLength: 10,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [4] }
+        ]
+    });
+});
+</script>
 @endsection

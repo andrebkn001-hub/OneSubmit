@@ -52,7 +52,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table id="statusProposalsTable" class="table table-hover mb-0">
                         <thead style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
                             <tr>
                                 <th class="border-0 fw-bold py-3 px-4">
@@ -335,4 +335,20 @@
     border: none !important;
 }
 </style>
+
+<script>
+$(document).ready(function() {
+    $('#statusProposalsTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [5] }
+        ]
+    });
+});
+</script>
 @endsection

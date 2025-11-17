@@ -7,6 +7,11 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchJabatanInput = document.getElementById('search-jabatan');
@@ -127,7 +132,7 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table id="dosenStaffTable" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gradient-to-r from-blue-600 to-purple-600">
                             <tr>
                                 <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
@@ -244,5 +249,26 @@
             </div>
         </div>
     </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#dosenStaffTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                },
+                responsive: true,
+                pageLength: 10,
+                order: [[0, 'asc']],
+                dom: 'frtip'
+            });
+        });
+    </script>
 </body>
 </html>

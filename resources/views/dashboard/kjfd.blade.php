@@ -104,7 +104,7 @@
 
                     @if($recentProposals->isNotEmpty())
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table id="kjfdRecentProposalsTable" class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>NIM</th>
@@ -139,4 +139,23 @@
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#kjfdRecentProposalsTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 5,
+        searching: false,
+        paging: false,
+        info: false,
+        order: [[4, 'desc']],
+        columnDefs: [
+            { orderable: false, targets: [5] }
+        ]
+    });
+});
+</script>
 @endsection

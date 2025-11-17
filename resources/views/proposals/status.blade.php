@@ -8,7 +8,7 @@
         <div class="alert alert-info">Belum ada proposal yang diajukan.</div>
     @else
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            <table id="proposalsStatusTable" class="table table-bordered table-striped">
                 <thead class="table-primary">
                     <tr>
                         <th>#</th>
@@ -53,4 +53,20 @@
 
     <a href="{{ route('mahasiswa.dashboard') }}" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#proposalsStatusTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        order: [[5, 'desc']],
+        columnDefs: [
+            { orderable: false, targets: [3] }
+        ]
+    });
+});
+</script>
 @endsection

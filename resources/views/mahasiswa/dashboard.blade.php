@@ -158,7 +158,7 @@
                         </div>
                     @else
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table id="kjfdQuotasTable" class="table table-hover mb-0">
                                 <thead class="table-primary" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
                                     <tr>
                                         <th class="border-0 fw-bold py-3 px-4">
@@ -277,4 +277,23 @@
     letter-spacing: 0.5px;
 }
 </style>
+
+<script>
+$(document).ready(function() {
+    $('#kjfdQuotasTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        searching: false,
+        paging: false,
+        info: false,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [1, 2, 3] }
+        ]
+    });
+});
+</script>
 @endsection

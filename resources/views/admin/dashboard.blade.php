@@ -13,7 +13,7 @@
                 <div class="card-body">
                     @if(!empty($counts) && $counts->isNotEmpty())
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table id="dashboardTable" class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -39,4 +39,20 @@
             </div>
         </div>
     </div>
+
+<script>
+$(document).ready(function() {
+    $('#dashboardTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        order: [[2, 'desc']],
+        searching: true,
+        paging: false,
+        info: false
+    });
+});
+</script>
 @endsection

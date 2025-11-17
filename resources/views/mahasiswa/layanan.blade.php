@@ -30,7 +30,7 @@
 
                 <div class="card-body p-5">
                     <div class="table-responsive">
-                        <table class="table table-hover border-0" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <table id="layananTable" class="table table-hover border-0" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                             <thead style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
                                 <tr>
                                     <th class="text-center fw-bold" style="width: 80px; color: #1976d2; border: none;">No</th>
@@ -109,4 +109,23 @@
     }
 }
 </style>
+
+<script>
+$(document).ready(function() {
+    $('#layananTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        pageLength: 10,
+        searching: true,
+        paging: false,
+        info: false,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [2] }
+        ]
+    });
+});
+</script>
 @endsection

@@ -11,7 +11,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <table class="table table-bordered mt-3">
+    <table id="adminProposalsTable" class="table table-bordered mt-3">
         <thead class="table-dark">
             <tr>
                 <th>Nama Mahasiswa</th>
@@ -66,4 +66,41 @@
         </tbody>
     </table>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#adminProposalsTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+        },
+        responsive: true,
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+             '<"row"<"col-sm-12 col-md-6"B>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [
+            {
+                extend: 'excel',
+                text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                className: 'btn btn-success btn-sm'
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                className: 'btn btn-danger btn-sm'
+            },
+            {
+                extend: 'print',
+                text: '<i class="bi bi-printer"></i> Print',
+                className: 'btn btn-info btn-sm'
+            }
+        ],
+        pageLength: 10,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [5, 6] }
+        ]
+    });
+});
+</script>
 @endsection

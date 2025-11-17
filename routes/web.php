@@ -72,15 +72,101 @@ Route::middleware('auth')->group(function () {
 // ADMIN ROUTES
 // ==========================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+
     Route::get('/dashboard', function () {
+        $query = \App\Models\Proposal::query();
+        
+        // Filter berdasarkan status
+        if (request('status')) {
+            $query->where('status', request('status'));
+        }
+        
+        // Filter berdasarkan bidang minat
+        if (request('bidang')) {
+            $query->where('bidang_minat', request('bidang'));
+        }
+        
+        // Filter berdasarkan tanggal
+        if (request('date_from')) {
+            $query->whereDate('created_at', '>=', request('date_from'));
+        }
+        if (request('date_to')) {
+            $query->whereDate('created_at', '<=', request('date_to'));
+        }
+        
+        // Search box
+        if (request('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', '%' . $search . '%')
+                  ->orWhere('nim', 'like', '%' . $search . '%')
+                  ->orWhere('nama_lengkap', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+        
+        // Get all proposals dengan filter
+        $allProposals = $query->latest()->get();
+        
         // Hitung jumlah proposal per bidang minat
         $counts = \App\Models\Proposal::select('bidang_minat', \DB::raw('count(*) as total'))
-                    ->groupBy('bidang_minat')
-                    ->orderBy('bidang_minat')
-                    ->get()
-                    ->pluck('total', 'bidang_minat');
+            ->groupBy('bidang_minat')
+            ->orderBy('bidang_minat')
+            ->get()
+            ->pluck('total', 'bidang_minat');
 
-        return view('admin.dashboard', compact('counts'));
+        // KPI Cards
+        $kpi = [
+            'total' => \App\Models\Proposal::count(),
+            'approved' => \App\Models\Proposal::where('status', 'disetujui')->count(),
+            'pending' => \App\Models\Proposal::where('status', 'menunggu_verifikasi')->count(),
+            'rejected' => \App\Models\Proposal::where('status', 'ditolak')->count(),
+        ];
+
+        // Trend Proposal per Bulan (12 bulan terakhir)
+        $trendRaw = \App\Models\Proposal::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as bulan, COUNT(*) as total')
+            ->where('created_at', '>=', now()->subMonths(12))
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+        $trend = [
+            'labels' => $trendRaw->pluck('bulan')->toArray(),
+            'data' => $trendRaw->pluck('total')->toArray(),
+        ];
+
+        // Statistik status proposal
+        $statusStats = [
+            'menunggu_verifikasi' => \App\Models\Proposal::where('status', 'menunggu_verifikasi')->count(),
+            'menunggu_verifikasi_dosen_kjfd' => \App\Models\Proposal::where('status', 'menunggu_verifikasi_dosen_kjfd')->count(),
+            'disetujui' => \App\Models\Proposal::where('status', 'disetujui')->count(),
+            'ditolak' => \App\Models\Proposal::where('status', 'ditolak')->count(),
+            'revisi' => \App\Models\Proposal::where('status', 'revisi')->count(),
+        ];
+
+        // User Management Statistics
+        $userStats = [
+            'total' => \App\Models\User::count(),
+            'mahasiswa' => \App\Models\User::where('role', 'mahasiswa')->count(),
+            'dosen_kjfd' => \App\Models\User::where('role', 'dosen_kjfd')->count(),
+            'admin' => \App\Models\User::where('role', 'admin')->count(),
+            'active_7days' => \App\Models\User::where('updated_at', '>=', now()->subDays(7))->count(),
+            'active_30days' => \App\Models\User::where('updated_at', '>=', now()->subDays(30))->count(),
+        ];
+
+        // User Growth per Bulan (6 bulan terakhir)
+        $userGrowthRaw = \App\Models\User::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as bulan, COUNT(*) as total')
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+        $userGrowth = [
+            'labels' => $userGrowthRaw->pluck('bulan')->toArray(),
+            'data' => $userGrowthRaw->pluck('total')->toArray(),
+        ];
+
+        return view('admin.dashboard', compact('counts', 'kpi', 'trend', 'statusStats', 'allProposals', 'userStats', 'userGrowth'));
     })->name('dashboard');
 
     // Proposal routes

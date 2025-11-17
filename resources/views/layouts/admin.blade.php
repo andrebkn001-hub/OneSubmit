@@ -183,6 +183,19 @@
                 OneSubmit
             </a>
             <div class="d-flex align-items-center">
+                <!-- Notification Badge for Pending Approvals -->
+                @php
+                    $pendingCount = \App\Models\Proposal::where('status', 'menunggu_verifikasi')->count();
+                @endphp
+                @if($pendingCount > 0)
+                    <a href="{{ route('admin.proposals.index') }}" class="btn btn-warning btn-sm me-3 position-relative">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $pendingCount }}
+                            <span class="visually-hidden">pending proposals</span>
+                        </span>
+                    </a>
+                @endif
                 <span class="text-white me-3">Dashboard Admin</span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -251,5 +264,8 @@
             }
         });
     </script>
+
+    {{-- Page-specific scripts injected here --}}
+    @stack('scripts')
 </body>
 </html>

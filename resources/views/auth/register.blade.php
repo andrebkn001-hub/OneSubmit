@@ -57,11 +57,11 @@
             <!-- Email Field -->
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                    Alamat Email
+                    Alamat Email UNRI
                 </label>
                 <input id="email" type="email"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('email') border-red-500 @enderror"
-                       name="email" value="{{ old('email') }}" required placeholder="Masukkan alamat email">
+                       name="email" value="{{ old('email') }}" required placeholder="contoh: nama@student.unri.ac.id">
                 @error('email')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror

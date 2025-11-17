@@ -14,6 +14,7 @@
                 <tr>
                     <th>Bidang</th>
                     <th class="text-center">Kuota</th>
+                    <th class="text-center">Sudah ACC</th>
                     <th class="text-center">Aksi</th>
                 </tr>
             </thead>
@@ -22,6 +23,14 @@
                 <tr>
                     <td>{{ $q->bidang }}</td>
                     <td class="text-center">{{ $q->quota }}</td>
+                    <td class="text-center">
+                        @php
+                            $accepted = \App\Models\Proposal::whereHas('dosenKjfd', function($query) use ($q) {
+                                $query->where('bidang', $q->bidang);
+                            })->where('status', 'disetujui')->count();
+                        @endphp
+                        {{ $accepted }}
+                    </td>
                     <td class="text-center">
                         <a href="{{ route('admin.quotas.edit', $q->id) }}" class="btn btn-sm btn-primary">Edit</a>
                     </td>

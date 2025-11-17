@@ -132,7 +132,7 @@
                             <i class="bi bi-people-fill me-2"></i>Kuota Proposal per Bidang KJFD
                         </h4>
                         <div class="badge bg-light text-primary fs-6 px-3 py-2">
-                            <i class="bi bi-info-circle me-1"></i>Batas kuota: <strong>50</strong> proposal
+                            <i class="bi bi-info-circle me-1"></i>Kuota dinamis per bidang sesuai pengaturan Admin
                         </div>
                     </div>
                 </div>
@@ -181,7 +181,9 @@
                                             $accepted = \App\Models\Proposal::where('dosen_kjfd_id', $kjfd->id)
                                                 ->where('status', 'disetujui')
                                                 ->count();
-                                            $limit = 50;
+                                            $bidang = str_replace('KJFD ', '', $kjfd->name);
+                                            $quota = \App\Models\KjfdQuota::where('bidang', $bidang)->first();
+                                            $limit = $quota ? $quota->quota : 50;
                                             $remaining = max(0, $limit - $accepted);
                                         @endphp
                                         <tr class="border-bottom border-light">

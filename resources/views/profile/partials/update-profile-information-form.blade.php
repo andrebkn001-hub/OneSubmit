@@ -14,9 +14,35 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-4">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-4" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <!-- Profile Photo Section -->
+        <div class="mb-4 text-center">
+            <label class="form-label fw-bold">{{ __('Profile Photo') }}</label>
+            <div class="d-flex flex-column align-items-center gap-3">
+                <div id="photo-preview" class="mb-2">
+                    @if ($user->profile_photo)
+                        <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="Profile Photo" 
+                             class="rounded-circle" 
+                             style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #0d6efd;">
+                    @else
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" 
+                             style="width: 100px; height: 100px; font-size: 2.5rem; font-weight: bold;">
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                        </div>
+                    @endif
+                </div>
+                <div>
+                    <input type="file" name="profile_photo" id="profile_photo" class="form-control" accept="image/*" onchange="previewImage(event)">
+                    <small class="text-muted">JPG, PNG, atau GIF (Max. 2MB)</small>
+                </div>
+            </div>
+            @error('profile_photo')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
+        </div>
 
         <div class="mb-3">
             <label for="name" class="form-label">{{ __('Name') }}</label>
@@ -69,3 +95,17 @@
         </div>
     </form>
 </section>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('photo-preview');
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #0d6efd;">`;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+</script>

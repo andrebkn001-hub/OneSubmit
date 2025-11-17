@@ -22,10 +22,39 @@
             color: white;
             flex-shrink: 0;
         }
-        .sidebar h4 {
+        .sidebar-header {
             padding: 20px;
-            font-size: 1.3rem;
             border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-header .profile-photo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+        .sidebar-header .profile-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            color: #0d6efd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+        .sidebar h4 {
+            margin: 0;
+            font-size: 1.3rem;
         }
         .sidebar a {
             display: block;
@@ -52,8 +81,17 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h4>OneSubmit</h4>
-        <div class="px-2">
+        <div class="sidebar-header">
+            @if(Auth::user()->profile_photo)
+                <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile Photo" class="profile-photo">
+            @else
+                <div class="profile-placeholder">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </div>
+            @endif
+            <h4>OneSubmit</h4>
+        </div>
+        <div class="px-2 mt-3">
             <a href="{{ route('dashboard') }}">🏠 Dashboard</a>
             <a href="{{ route('profile.edit') }}">👤 Profil</a>
             <a href="{{ route('pengajuan.index') }}">📄 Proposal Tugas Akhir</a>

@@ -33,8 +33,33 @@
         .sidebar-header {
             padding: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.2);
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 14px;
             margin-bottom: 20px;
+        }
+        .sidebar-header .profile-photo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+        .sidebar-header .profile-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            color: #1e90ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
         }
         .sidebar a {
             color: white;
@@ -157,8 +182,15 @@
 
     <div class="sidebar">
         <div class="sidebar-header">
-            <h5 class="fw-bold mb-1">OneSubmit</h5>
-            <p class="mb-0 opacity-75 small">Menu Dashboard</p>
+            @if(Auth::user()->profile_photo)
+                <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile Photo" class="profile-photo">
+            @else
+                <div class="profile-placeholder">{{ strtoupper(substr(Auth::user()->name,0,1)) }}</div>
+            @endif
+            <div>
+                <h5 class="fw-bold mb-1">OneSubmit</h5>
+                <p class="mb-0 opacity-75 small">Menu Dashboard</p>
+            </div>
         </div>
         <a href="{{ route('dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
 

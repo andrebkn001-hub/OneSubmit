@@ -92,6 +92,12 @@
                                             <i class="bi bi-type-bold me-1"></i>Judul Proposal
                                         </label>
                                     </div>
+                                    <div class="mt-2">
+                                        <div class="alert alert-warning py-2 px-3 mb-2" style="border-radius: 8px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
+                                            <small><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Penting:</strong> Judul harus terdiri dari minimal 7 kata dan maksimal 15 kata</small>
+                                        </div>
+                                        <div id="judulHelp" class="small text-muted"><i class="bi bi-chat-square-text me-1"></i>Jumlah kata saat ini: <strong>0</strong></div>
+                                    </div>
                                     @error('judul')
                                         <div class="text-danger small mt-1">
                                             <i class="bi bi-exclamation-circle me-1"></i>{{ $message }}
@@ -255,6 +261,19 @@ document.getElementById('proposalForm').addEventListener('submit', function(e) {
     const submitBtn = document.getElementById('submitBtn');
     const originalText = submitBtn.innerHTML;
 
+    // Prevent submit if word count invalid (defensive client-side)
+    const judulInput = document.getElementById('judul');
+    const words = judulInput.value.trim().replace(/\s+/g, ' ').split(' ').filter(w => w.length > 0);
+    const count = words.length;
+    if (count < 7 || count > 15) {
+        e.preventDefault();
+        const help = document.getElementById('judulHelp');
+        help.classList.remove('text-muted');
+        help.classList.add('text-danger');
+        help.innerHTML = 'Jumlah kata judul saat ini ' + count + '. Harus 7 - 15 kata.';
+        return; // Do not show loading state if invalid
+    }
+
     submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Mengirim...';
     submitBtn.disabled = true;
 
@@ -263,6 +282,39 @@ document.getElementById('proposalForm').addEventListener('submit', function(e) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }, 3000);
+});
+
+// Live word count feedback
+const judulField = document.getElementById('judul');
+const judulHelp = document.getElementById('judulHelp');
+const submitBtn = document.getElementById('submitBtn');
+judulField.addEventListener('input', () => {
+    const words = judulField.value.trim().replace(/\s+/g, ' ').split(' ').filter(w => w.length > 0);
+    const count = judulField.value.trim() === '' ? 0 : words.length;
+    const valid = count >= 7 && count <= 15;
+    
+    // Update counter with status icon
+    let statusIcon = '<i class="bi bi-chat-square-text me-1"></i>';
+    let statusClass = 'text-muted';
+    let statusText = 'Jumlah kata saat ini: <strong>' + count + '</strong>';
+    
+    if (count > 0 && count < 7) {
+        statusIcon = '<i class="bi bi-exclamation-circle-fill me-1"></i>';
+        statusClass = 'text-danger';
+        statusText += ' <span class="fw-bold">(Kurang ' + (7 - count) + ' kata lagi)</span>';
+    } else if (count > 15) {
+        statusIcon = '<i class="bi bi-exclamation-circle-fill me-1"></i>';
+        statusClass = 'text-danger';
+        statusText += ' <span class="fw-bold">(Kelebihan ' + (count - 15) + ' kata)</span>';
+    } else if (count >= 7 && count <= 15) {
+        statusIcon = '<i class="bi bi-check-circle-fill me-1"></i>';
+        statusClass = 'text-success';
+        statusText += ' <span class="fw-bold">✓ Sesuai ketentuan</span>';
+    }
+    
+    judulHelp.innerHTML = statusIcon + statusText;
+    judulHelp.className = 'small ' + statusClass;
+    submitBtn.disabled = !valid;
 });
 </script>
 @endsection

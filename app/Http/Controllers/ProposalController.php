@@ -75,7 +75,19 @@ class ProposalController extends Controller
         try {
             // Validasi input
             $request->validate([
-                'judul' => 'required|string|max:255',
+                'judul' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    function ($attribute, $value, $fail) {
+                        $normalized = trim(preg_replace('/\s+/u', ' ', $value));
+                        $words = preg_split('/\s+/u', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+                        $count = count($words);
+                        if ($count < 7 || $count > 15) {
+                            $fail('Judul proposal harus terdiri dari 7 hingga 15 kata. Saat ini: '.$count.' kata.');
+                        }
+                    }
+                ],
                 'bidang_minat' => 'required|string|max:100',
                 'file_proposal' => 'required|file|mimes:pdf,doc,docx|min:200|max:5120',
             ]);

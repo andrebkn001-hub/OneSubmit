@@ -18,7 +18,21 @@ class ProposalService
     {
         $rules = [
             'nim' => 'required|string|max:20',
-            'judul' => 'required|string|max:255',
+            'judul' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    // Normalisasi spasi dan hitung kata (Indonesian words count OK with str_word_count)
+                    $normalized = trim(preg_replace('/\s+/u', ' ', $value));
+                    // str_word_count tanpa parameter kedua akan menghitung berdasarkan huruf a-z; untuk dukungan UTF-8 sederhana kita fallback ke explode by space
+                    $words = preg_split('/\s+/u', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+                    $count = count($words);
+                    if ($count < 7 || $count > 15) {
+                        $fail('Judul proposal harus terdiri dari 7 hingga 15 kata. Saat ini: '.$count.' kata.');
+                    }
+                }
+            ],
             'bidang_minat' => 'required|string|max:100',
             // file size rules are in kilobytes. min:200 => 200 KB, max:5120 => 5 MB
             'file_proposal' => $isUpdate ? 'required|file|mimes:pdf,doc,docx|min:200|max:5120' : 'required|file|mimes:pdf,doc,docx|min:200|max:5120',

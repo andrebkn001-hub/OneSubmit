@@ -101,19 +101,63 @@ class InboxController extends Controller
         }
 
         $sent = 0;
+        $skipped = 0;
+        $nextAvailableTime = null;
+        
         foreach ($recipients as $user) {
             $key = "notify:proposal:{$proposal->id}:user:{$user->id}";
+            $expiryKey = $key . ':expiry';
+            
             if (!Cache::has($key)) {
+                // Kirim notifikasi dan simpan cache dengan expiry time
                 $user->notify(new ProposalActionAlert($proposal, $targetType, $request->user()));
-                Cache::put($key, 1, now()->addMinutes(10)); // rate limit 10 menit
+                $expiryTime = now()->addMinutes(10);
+                Cache::put($key, 1, $expiryTime);
+                Cache::put($expiryKey, $expiryTime->timestamp, $expiryTime);
                 $sent++;
+            } else {
+                $skipped++;
+                // Ambil waktu expiry dari cache
+                $expiryTimestamp = Cache::get($expiryKey);
+                if ($expiryTimestamp) {
+                    $expiryTime = \Carbon\Carbon::createFromTimestamp($expiryTimestamp);
+                    if (!$nextAvailableTime || $expiryTime->lt($nextAvailableTime)) {
+                        $nextAvailableTime = $expiryTime;
+                    }
+                }
             }
         }
 
         // Clear sidebar cache so badge updates if needed
         app(\App\Services\SidebarService::class)->clearCache();
 
-        return back()->with('success', "Notifikasi dikirim ke {$sent} penerima.");
+        // Pesan sukses dengan info rate limiting
+        if ($sent > 0 && $skipped === 0) {
+            return back()->with('success', "Notifikasi berhasil dikirim ke {$sent} penerima.");
+        } elseif ($sent > 0 && $skipped > 0) {
+            $message = "Notifikasi dikirim ke {$sent} penerima. {$skipped} notifikasi dilewati karena baru saja dikirim.";
+            if ($nextAvailableTime && $nextAvailableTime->isFuture()) {
+                $minutesLeft = now()->diffInMinutes($nextAvailableTime, true);
+                $minutesLeft = ceil($minutesLeft); // Bulatkan ke atas
+                if ($minutesLeft > 0) {
+                    $message .= " Anda dapat mengirim ulang dalam {$minutesLeft} menit.";
+                }
+            }
+            return back()->with('warning', $message);
+        } else {
+            // Semua dilewati
+            $message = "Notifikasi tidak dikirim. Notifikasi untuk proposal ini baru saja dikirim.";
+            if ($nextAvailableTime && $nextAvailableTime->isFuture()) {
+                $minutesLeft = now()->diffInMinutes($nextAvailableTime, true);
+                $minutesLeft = ceil($minutesLeft); // Bulatkan ke atas
+                if ($minutesLeft > 0) {
+                    $message .= " Silakan coba lagi dalam {$minutesLeft} menit.";
+                } else {
+                    $message .= " Silakan coba lagi sebentar lagi.";
+                }
+            }
+            return back()->with('info', $message);
+        }
     }
 
     /**

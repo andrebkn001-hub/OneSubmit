@@ -256,7 +256,218 @@
             </div>
         </div>
     </div>
+
+    <!-- Row 2: Charts & Activity Feed -->
+    <div class="row mt-4">
+        <!-- Grafik Distribusi Status -->
+        <div class="col-xl-4 col-lg-5 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-pie"></i> Distribusi Status Proposal
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:250px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="mt-3 small text-center">
+                        <span class="mr-3"><i class="fas fa-circle text-success"></i> Disetujui</span>
+                        <span class="mr-3"><i class="fas fa-circle text-info"></i> Proses</span>
+                        <span class="mr-3"><i class="fas fa-circle text-warning"></i> Menunggu</span>
+                        <span><i class="fas fa-circle text-danger"></i> Ditolak</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-history"></i> Aktivitas Terbaru
+                    </h6>
+                    <a href="<?php echo e(route('jurusan.inbox.index')); ?>" class="btn btn-sm btn-primary">
+                        Lihat Semua
+                    </a>
+                </div>
+                <div class="card-body" style="max-height: 320px; overflow-y: auto;">
+                    <?php
+                        $recentActivities = \App\Models\Proposal::with('user')
+                            ->orderBy('updated_at', 'desc')
+                            ->limit(8)
+                            ->get();
+                    ?>
+                    
+                    <?php $__empty_1 = true; $__currentLoopData = $recentActivities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                            <div class="mr-3">
+                                <?php if($activity->status === 'disetujui'): ?>
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-check text-white"></i>
+                                    </div>
+                                <?php elseif($activity->status === 'ditolak'): ?>
+                                    <div class="icon-circle bg-danger">
+                                        <i class="fas fa-times text-white"></i>
+                                    </div>
+                                <?php elseif($activity->status === 'revisi'): ?>
+                                    <div class="icon-circle bg-warning">
+                                        <i class="fas fa-redo text-white"></i>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="icon-circle bg-info">
+                                        <i class="fas fa-clock text-white"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="font-weight-bold text-gray-800"><?php echo e($activity->user->name); ?></div>
+                                <div class="small text-gray-600"><?php echo e(Str::limit($activity->judul, 50)); ?></div>
+                                <div class="small">
+                                    <span class="badge badge-<?php echo e($activity->getStatusBadgeColor()); ?>">
+                                        <?php echo e($activity->getStatusLabel()); ?>
+
+                                    </span>
+                                    <span class="text-muted ml-2">
+                                        <i class="far fa-clock"></i> <?php echo e($activity->updated_at->diffForHumans()); ?>
+
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>Belum ada aktivitas</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Aging Alerts & Processing Time -->
+    <div class="row mt-4">
+        <!-- Aging Proposals Alert -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow border-left-danger h-100">
+                <div class="card-header bg-gradient-danger py-3">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-exclamation-triangle"></i> Proposal Aging (>3 Hari)
+                    </h6>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <?php
+                        $agingProposals = \App\Models\Proposal::with('user')
+                            ->needsKetuaAction()
+                            ->aging(3)
+                            ->orderBy('created_at', 'asc')
+                            ->limit(5)
+                            ->get();
+                    ?>
+                    
+                    <?php $__empty_1 = true; $__currentLoopData = $agingProposals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $aging): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="alert alert-danger mb-2 d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="font-weight-bold"><?php echo e($aging->user->name); ?></div>
+                                <div class="small"><?php echo e(Str::limit($aging->judul, 40)); ?></div>
+                                <div class="small text-muted">
+                                    <i class="fas fa-calendar-times"></i> <?php echo e($aging->getDaysSinceSubmission()); ?> hari yang lalu
+                                </div>
+                            </div>
+                            <a href="<?php echo e(route('jurusan.inbox.show', $aging->id)); ?>" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                            <p>Tidak ada proposal yang aging</p>
+                            <small>Semua proposal diproses dengan baik!</small>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if($agingProposals->count() > 0): ?>
+                        <div class="text-center mt-3">
+                            <a href="<?php echo e(route('jurusan.inbox.index', ['aging' => 3])); ?>" class="btn btn-sm btn-danger">
+                                Lihat Semua (<?php echo e(\App\Models\Proposal::needsKetuaAction()->aging(3)->count()); ?>)
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average Processing Time -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-gradient-info">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-tachometer-alt"></i> Waktu Pemrosesan Rata-rata
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <?php
+                        $processedProposals = \App\Models\Proposal::whereIn('status', ['disetujui', 'ditolak'])->get();
+                        $avgDays = $processedProposals->count() > 0 
+                            ? round($processedProposals->avg(function($p) {
+                                return $p->created_at->diffInDays($p->updated_at);
+                            }), 1)
+                            : 0;
+                        
+                        // Breakdown by status
+                        $approvedProposals = \App\Models\Proposal::where('status', 'disetujui')->get();
+                        $avgApproved = $approvedProposals->count() > 0
+                            ? round($approvedProposals->avg(function($p) {
+                                return $p->created_at->diffInDays($p->updated_at);
+                            }), 1)
+                            : 0;
+                            
+                        $rejectedProposals = \App\Models\Proposal::where('status', 'ditolak')->get();
+                        $avgRejected = $rejectedProposals->count() > 0
+                            ? round($rejectedProposals->avg(function($p) {
+                                return $p->created_at->diffInDays($p->updated_at);
+                            }), 1)
+                            : 0;
+                    ?>
+                    
+                    <div class="text-center mb-4">
+                        <div class="display-4 font-weight-bold text-info"><?php echo e($avgDays); ?></div>
+                        <div class="text-muted">Hari (Overall)</div>
+                    </div>
+                    
+                    <div class="row text-center">
+                        <div class="col-6 border-right">
+                            <div class="h3 font-weight-bold text-success mb-0"><?php echo e($avgApproved); ?></div>
+                            <div class="small text-muted">Hari (Disetujui)</div>
+                            <div class="mt-2">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="h3 font-weight-bold text-danger mb-0"><?php echo e($avgRejected); ?></div>
+                            <div class="small text-muted">Hari (Ditolak)</div>
+                            <div class="mt-2">
+                                <i class="fas fa-times-circle fa-2x text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light mt-3 mb-0">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> 
+                            Dihitung dari waktu pengajuan hingga keputusan final
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
 <!-- Font Awesome untuk icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -275,6 +486,9 @@
 .border-left-warning {
     border-left: .25rem solid #f6c23e!important;
 }
+.border-left-danger {
+    border-left: .25rem solid #e74a3b!important;
+}
 .card {
     transition: transform .2s;
 }
@@ -290,7 +504,132 @@
 .card:hover .card-header {
     box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
 }
+
+/* Activity Feed Styles */
+.icon-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Badge colors */
+.badge-yellow {
+    background-color: #f6c23e;
+    color: #fff;
+}
+.badge-blue {
+    background-color: #36b9cc;
+    color: #fff;
+}
+.badge-green {
+    background-color: #1cc88a;
+    color: #fff;
+}
+.badge-red {
+    background-color: #e74a3b;
+    color: #fff;
+}
+.badge-orange {
+    background-color: #fd7e14;
+    color: #fff;
+}
+.badge-gray {
+    background-color: #858796;
+    color: #fff;
+}
+
+/* Gradient headers */
+.bg-gradient-danger {
+    background: linear-gradient(180deg, #e74a3b 10%, #be2617 100%);
+    background-size: cover;
+}
+.bg-gradient-info {
+    background: linear-gradient(180deg, #36b9cc 10%, #258391 100%);
+    background-size: cover;
+}
+
+/* Scrollbar custom */
+.card-body::-webkit-scrollbar {
+    width: 6px;
+}
+.card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.card-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+.card-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Data untuk Pie Chart
+    <?php
+        $totalProposals = \App\Models\Proposal::count();
+        $disetujui = \App\Models\Proposal::where('status', 'disetujui')->count();
+        $menungguVerifikasi = \App\Models\Proposal::where('status', 'menunggu_verifikasi')->count();
+        $menungguKjfd = \App\Models\Proposal::where('status', 'menunggu_verifikasi_dosen_kjfd')->count();
+        $revisi = \App\Models\Proposal::where('status', 'revisi')->count();
+        $ditolak = \App\Models\Proposal::where('status', 'ditolak')->count();
+        $dalamProses = $menungguVerifikasi + $menungguKjfd + $revisi;
+    ?>
+    
+    const ctx = document.getElementById('statusChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Disetujui', 'Dalam Proses', 'Menunggu Verifikasi', 'Ditolak'],
+                datasets: [{
+                    data: [
+                        <?php echo e($disetujui); ?>,
+                        <?php echo e($dalamProses); ?>,
+                        <?php echo e($menungguVerifikasi); ?>,
+                        <?php echo e($ditolak); ?>
+
+                    ],
+                    backgroundColor: [
+                        '#1cc88a',  // success
+                        '#36b9cc',  // info
+                        '#f6c23e',  // warning
+                        '#e74a3b'   // danger
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed || 0;
+                                let total = <?php echo e($totalProposals); ?>;
+                                let percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+});
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\OneSubmit\resources\views/dashboard/jurusan.blade.php ENDPATH**/ ?>

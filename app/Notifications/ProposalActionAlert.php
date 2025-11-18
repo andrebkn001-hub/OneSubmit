@@ -38,7 +38,7 @@ class ProposalActionAlert extends Notification implements ShouldQueue
             'target' => $this->targetType,
             'sender_id' => $this->sender?->id,
             'message' => $this->buildMessage(),
-            'url' => route('jurusan.proposals.index', $this->mapBidangToCode($this->proposal->bidang_minat)),
+            'url' => $this->getUrlForUser($notifiable),
         ];
     }
 
@@ -48,8 +48,24 @@ class ProposalActionAlert extends Notification implements ShouldQueue
             ->subject('Alert Proposal: ' . $this->proposal->judul)
             ->greeting('Halo,')
             ->line($this->buildMessage())
-            ->action('Buka Proposal', route('jurusan.proposals.index', $this->mapBidangToCode($this->proposal->bidang_minat)))
+            ->action('Buka Proposal', $this->getUrlForUser($notifiable))
             ->line('Terima kasih.');
+    }
+
+    /**
+     * Get appropriate URL based on user role
+     */
+    private function getUrlForUser($notifiable): string
+    {
+        $role = $notifiable->role ?? 'mahasiswa';
+        
+        // Generate URL sesuai role yang menerima notifikasi
+        return match($role) {
+            'admin' => route('admin.proposals.index'),
+            'dosen_kjfd' => route('kjfd.proposals.index'),
+            'ketua_jurusan' => route('jurusan.proposals.index', $this->mapBidangToCode($this->proposal->bidang_minat)),
+            default => route('mahasiswa.status'),
+        };
     }
 
     private function buildMessage(): string

@@ -389,48 +389,6 @@
         </div>
     </div>
 
-    <!-- Ringkasan Proposal per Bidang Minat (Table Summary) -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="bi bi-list-check text-success"></i> Ringkasan Proposal per Bidang Minat
-                    </h5>
-                </div>
-                <div class="card-body">
-                    @if(!empty($counts) && $counts->isNotEmpty())
-                        <div class="table-responsive">
-                            <table id="dashboardTable" class="table table-striped">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th><i class="bi bi-hash"></i> No</th>
-                                        <th><i class="bi bi-bookmark"></i> Bidang Minat</th>
-                                        <th><i class="bi bi-file-earmark-bar-graph"></i> Jumlah Proposal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($counts as $bidang => $total)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td><strong>{{ $bidang ?? 'Tidak ditentukan' }}</strong></td>
-                                            <td><span class="badge bg-primary">{{ $total }}</span></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="text-center py-5">
-                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                            <p class="text-muted mt-2">Belum ada proposal yang diajukan.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
 <!-- Quick View Modal -->
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -591,6 +549,11 @@
     .form-control:focus, .form-select:focus {
         border-color: #4682b4;
         box-shadow: 0 0 0 0.2rem rgba(70, 130, 180, 0.25);
+    }
+
+    /* Status Badge - Text hitam untuk semua warna background */
+    #proposalTable .badge {
+        color: #000 !important;
     }
 </style>
 
@@ -801,19 +764,6 @@ function initializeCharts() {
 }
 
 $(document).ready(function() {
-    // Initialize DataTable untuk tabel ringkasan
-    $('#dashboardTable').DataTable({
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
-        },
-        responsive: true,
-        pageLength: 10,
-        order: [[2, 'desc']],
-        searching: true,
-        paging: false,
-        info: false
-    });
-
     // Initialize DataTable untuk tabel proposal
     var proposalTable = $('#proposalTable').DataTable({
         language: {

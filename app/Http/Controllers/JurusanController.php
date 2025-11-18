@@ -77,17 +77,22 @@ class JurusanController extends Controller
     {
         // 1. BUAT PEMETAAN BIDANG MINAT dari URL singkat ke nilai Database (Factory)
         $bidangMap = [
-            // Pastikan kode di URL cocok dengan nama lengkap di Factory
+            // Kode singkat
             'im' => 'Information Management',
             'bi' => 'Business Intelligence',
-            'de' => 'Data Engineering', // Contoh: URL /proposals/de akan mencari Data Engineering
+            'de' => 'Data Engineering',
             'ir' => 'Information Retrieval',
+            // Format dengan dash (untuk backward compatibility)
+            'business-intelligence' => 'Business Intelligence',
+            'data-engineering' => 'Data Engineering',
+            'information-management' => 'Information Management',
+            'information-retrieval' => 'Information Retrieval',
         ];
 
         // Normalisasi parameter dan cari kecocokan
         $param = strtolower(trim($bidang));
 
-        // 1) Cek kode singkat (im, bi, de, ir)
+        // 1) Cek kode singkat atau format dash
         if (isset($bidangMap[$param])) {
             $bidangDB = $bidangMap[$param];
         } else {

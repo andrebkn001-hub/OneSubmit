@@ -220,6 +220,12 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 // ==========================
 Route::middleware(['auth', 'role:ketua_jurusan'])->prefix('jurusan')->name('jurusan.')->group(function () {
     Route::get('/dashboard', fn() => view('dashboard.jurusan'))->name('dashboard');
+    
+    // Inbox - Aksi yang butuh perhatian Ketua Jurusan
+    Route::get('/inbox', [App\Http\Controllers\Jurusan\InboxController::class, 'index'])->name('inbox.index');
+    Route::get('/inbox/{id}', [App\Http\Controllers\Jurusan\InboxController::class, 'show'])->name('inbox.show');
+    Route::post('/inbox/{id}/notify', [App\Http\Controllers\Jurusan\InboxController::class, 'notify'])->name('inbox.notify');
+    
     Route::get('/proposals/kjfd', [App\Http\Controllers\JurusanController::class, 'kjfdSelection'])->name('proposals.kjfd');
     Route::get('/proposals/{bidang}', [App\Http\Controllers\JurusanController::class, 'proposalsIndex'])->name('proposals.index');
     // KOREKSI: Panggil Controller Jurusan
@@ -241,3 +247,12 @@ Route::middleware(['auth', 'role:dosen_kjfd'])->prefix('kjfd')->name('kjfd.')->g
 
 // Route untuk otentikasi
 require __DIR__.'/auth.php';
+
+// ==========================
+// GLOBAL NOTIFICATIONS ROUTES
+// ==========================
+Route::middleware(['auth'])->post('/notifications/read-all', function () {
+    $user = auth()->user();
+    $user->unreadNotifications->markAsRead();
+    return back();
+})->name('notifications.read-all');

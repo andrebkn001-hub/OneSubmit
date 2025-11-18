@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OneSubmit Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OneSubmit - Dashboard Admin</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-    
+
     <style>
         body {
             overflow-x: hidden;
-            background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
             background-attachment: fixed;
         }
+
         .sidebar {
             height: 100vh;
             width: 280px;
@@ -30,6 +36,7 @@
             z-index: 999;
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
+
         .sidebar-header {
             padding: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.2);
@@ -61,6 +68,7 @@
             border: 2px solid #ffffff;
             box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
         }
+
         .sidebar a {
             color: white;
             display: block;
@@ -69,36 +77,26 @@
             transition: all 0.3s ease;
             border-radius: 8px;
             margin: 5px 15px;
-            position: relative;
         }
+
         .sidebar a:hover {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
+
         .sidebar a i {
             margin-right: 10px;
             width: 20px;
         }
-        .sidebar a .badge {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            padding: 0.25em 0.5em;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+
         .content {
             margin-left: 280px;
             padding: 90px 30px 30px 30px;
             min-height: 100vh;
             background: #f8fafc;
         }
+
         .navbar {
             position: fixed;
             width: 100%;
@@ -106,12 +104,14 @@
             background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+
         .navbar-brand {
             display: flex;
             align-items: center;
             font-weight: 700;
             font-size: 1.5rem;
         }
+
         .navbar-brand img {
             height: 40px;
             margin-right: 10px;
@@ -178,46 +178,28 @@
             <button class="navbar-toggler d-md-none" type="button" onclick="toggleSidebar()">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo">
+            <a class="navbar-brand" href="<?php echo e(url('/')); ?>">
+                <img src="<?php echo e(asset('images/unri.png')); ?>" alt="Universitas Riau Logo">
                 OneSubmit
             </a>
             <div class="d-flex align-items-center">
-                <!-- Notifications Bell -->
-                @php
-                    $unread = Auth::check() ? Auth::user()->unreadNotifications()->limit(10)->get() : collect();
-                @endphp
-                <div class="dropdown me-3">
-                    <button class="btn btn-outline-light btn-sm dropdown-toggle position-relative" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-bell"></i>
-                        @if($unread->count() > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ $unread->count() }}</span>
-                        @endif
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" style="min-width: 360px; max-height: 420px; overflow-y: auto;">
-                        <li class="dropdown-header fw-bold">Notifikasi</li>
-                        @forelse($unread as $notif)
-                            <li>
-                                <a class="dropdown-item small" href="{{ $notif->data['url'] ?? '#' }}">
-                                    <div class="fw-semibold">{{ $notif->data['message'] ?? 'Notifikasi' }}</div>
-                                    <div class="text-muted">{{ $notif->created_at->diffForHumans() }}</div>
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                        @empty
-                            <li><span class="dropdown-item text-muted">Tidak ada notifikasi baru</span></li>
-                        @endforelse
-                        <li>
-                            <form method="POST" action="{{ route('notifications.read-all') }}" class="px-3 py-2">
-                                @csrf
-                                <button class="btn btn-sm btn-outline-secondary w-100">Tandai semua sebagai sudah dibaca</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-                <span class="text-white me-3">Selamat datang, {{ Auth::user()->name }}</span>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+                <!-- Notification Badge for Pending Approvals -->
+                <?php
+                    $pendingCount = \App\Models\Proposal::where('status', 'menunggu_verifikasi')->count();
+                ?>
+                <?php if($pendingCount > 0): ?>
+                    <a href="<?php echo e(route('admin.proposals.index')); ?>" class="btn btn-warning btn-sm me-3 position-relative">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <?php echo e($pendingCount); ?>
+
+                            <span class="visually-hidden">pending proposals</span>
+                        </span>
+                    </a>
+                <?php endif; ?>
+                <span class="text-white me-3">Dashboard Admin</span>
+                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="btn btn-outline-light btn-sm">
                         <i class="bi bi-box-arrow-right"></i> Logout
                     </button>
@@ -228,64 +210,45 @@
 
     <div class="sidebar">
         <div class="sidebar-header">
-            @if(Auth::user()->profile_photo)
-                <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile Photo" class="profile-photo">
-            @else
-                <div class="profile-placeholder">{{ strtoupper(substr(Auth::user()->name,0,1)) }}</div>
-            @endif
+            <?php if(Auth::user()->profile_photo): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->profile_photo)); ?>" alt="Profile Photo" class="profile-photo">
+            <?php else: ?>
+                <div class="profile-placeholder"><?php echo e(strtoupper(substr(Auth::user()->name,0,1))); ?></div>
+            <?php endif; ?>
             <div>
                 <h5 class="fw-bold mb-1">OneSubmit</h5>
-                <p class="mb-0 opacity-75 small">Menu Dashboard</p>
+                <p class="mb-0 opacity-75 small">Menu Admin</p>
             </div>
         </div>
-        <a href="{{ route('dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-
-        @if(Auth::user()->role == 'mahasiswa')
-            <a href="{{ route('mahasiswa.proposal.create') }}"><i class="bi bi-send"></i> Ajukan Proposal</a>
-            <a href="{{ route('mahasiswa.status') }}"><i class="bi bi-envelope-paper"></i> Status Proposal</a>
-            <a href="{{ route('mahasiswa.layanan') }}"><i class="bi bi-file-earmark-text"></i> Layanan</a>
-        @endif
-
-        @if(Auth::user()->role == 'admin')
-            <a href="{{ route('admin.dashboard') }}"><i class="bi bi-person-gear"></i> Kelola Data</a>
-        @endif
-
-        @if(Auth::user()->role == 'ketua_jurusan')
-            @php
-                $sidebarService = app(\App\Services\SidebarService::class);
-                $badges = $sidebarService->getKetuaJurusanBadges();
-            @endphp
-            <a href="{{ route('jurusan.inbox.index') }}">
-                <i class="bi bi-inbox-fill"></i> Inbox Aksi Saya
-                @if($badges['inbox_total'] > 0)
-                    <span class="badge bg-danger rounded-pill float-end">{{ $badges['inbox_total'] }}</span>
-                @endif
-            </a>
-            <a href="{{ route('jurusan.proposals.kjfd') }}"><i class="bi bi-file-earmark-check"></i> Daftar Proposal</a>
-        @endif
-
-        @if(Auth::user()->role == 'ketua_kjfd')
-            <a href="{{ route('kjfd.dashboard') }}"><i class="bi bi-clipboard2-check"></i> Validasi KJFD</a>
-        @endif
-
-        <a href="{{ route('profile.edit') }}"><i class="bi bi-person"></i> Profil</a>
+        <a href="<?php echo e(route('admin.dashboard')); ?>"><i class="bi bi-house-door"></i> Dashboard</a>
+        <a href="<?php echo e(route('admin.proposals.index')); ?>"><i class="bi bi-folder2-open"></i> Kelola Proposal</a>
+        <a href="<?php echo e(route('admin.students.index')); ?>"><i class="bi bi-people"></i> Daftar Mahasiswa</a>
+        <a href="<?php echo e(route('admin.quotas.index')); ?>"><i class="bi bi-sliders"></i> Kelola Kuota</a>
+        <a href="<?php echo e(route('profile.edit')); ?>"><i class="bi bi-person"></i> Profil</a>
     </div>
 
     <div class="content">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </div>
 
-    <!-- jQuery (required for DataTables) -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery (required for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     
     <script>
         function toggleSidebar() {
@@ -302,5 +265,9 @@
             }
         });
     </script>
+
+    
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
+<?php /**PATH C:\laragon\www\OneSubmit\resources\views/layouts/admin.blade.php ENDPATH**/ ?>

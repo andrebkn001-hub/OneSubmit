@@ -114,4 +114,51 @@ class Proposal extends Model
             default => 'Unknown',
         };
     }
+
+    /**
+     * Scope: Proposals that need Ketua Jurusan action.
+     * Status: menunggu_verifikasi or revisi
+     */
+    public function scopeNeedsKetuaAction($query)
+    {
+        return $query->whereIn('status', ['menunggu_verifikasi', 'revisi']);
+    }
+
+    /**
+     * Scope: Proposals waiting for verification.
+     */
+    public function scopeWaitingVerification($query)
+    {
+        return $query->where('status', 'menunggu_verifikasi');
+    }
+
+    /**
+     * Scope: Proposals that are aging (older than N days).
+     *
+     * @param int $days
+     */
+    public function scopeAging($query, int $days = 3)
+    {
+        return $query->where('created_at', '<=', now()->subDays($days));
+    }
+
+    /**
+     * Get days since submission.
+     *
+     * @return int
+     */
+    public function getDaysSinceSubmission(): int
+    {
+        return $this->created_at->diffInDays(now());
+    }
+
+    /**
+     * Check if proposal is aging (more than 3 days).
+     *
+     * @return bool
+     */
+    public function isAging(): bool
+    {
+        return $this->getDaysSinceSubmission() > 3;
+    }
 }

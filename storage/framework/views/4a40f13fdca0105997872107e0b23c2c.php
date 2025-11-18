@@ -178,46 +178,46 @@
             <button class="navbar-toggler d-md-none" type="button" onclick="toggleSidebar()">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('images/unri.png') }}" alt="Universitas Riau Logo">
+            <a class="navbar-brand" href="<?php echo e(url('/')); ?>">
+                <img src="<?php echo e(asset('images/unri.png')); ?>" alt="Universitas Riau Logo">
                 OneSubmit
             </a>
             <div class="d-flex align-items-center">
                 <!-- Notifications Bell -->
-                @php
+                <?php
                     $unread = Auth::check() ? Auth::user()->unreadNotifications()->limit(10)->get() : collect();
-                @endphp
+                ?>
                 <div class="dropdown me-3">
                     <button class="btn btn-outline-light btn-sm dropdown-toggle position-relative" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell"></i>
-                        @if($unread->count() > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ $unread->count() }}</span>
-                        @endif
+                        <?php if($unread->count() > 0): ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php echo e($unread->count()); ?></span>
+                        <?php endif; ?>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" style="min-width: 360px; max-height: 420px; overflow-y: auto;">
                         <li class="dropdown-header fw-bold">Notifikasi</li>
-                        @forelse($unread as $notif)
+                        <?php $__empty_1 = true; $__currentLoopData = $unread; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notif): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <li>
-                                <a class="dropdown-item small" href="{{ $notif->data['url'] ?? '#' }}">
-                                    <div class="fw-semibold">{{ $notif->data['message'] ?? 'Notifikasi' }}</div>
-                                    <div class="text-muted">{{ $notif->created_at->diffForHumans() }}</div>
+                                <a class="dropdown-item small" href="<?php echo e($notif->data['url'] ?? '#'); ?>">
+                                    <div class="fw-semibold"><?php echo e($notif->data['message'] ?? 'Notifikasi'); ?></div>
+                                    <div class="text-muted"><?php echo e($notif->created_at->diffForHumans()); ?></div>
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <li><span class="dropdown-item text-muted">Tidak ada notifikasi baru</span></li>
-                        @endforelse
+                        <?php endif; ?>
                         <li>
-                            <form method="POST" action="{{ route('notifications.read-all') }}" class="px-3 py-2">
-                                @csrf
+                            <form method="POST" action="<?php echo e(route('notifications.read-all')); ?>" class="px-3 py-2">
+                                <?php echo csrf_field(); ?>
                                 <button class="btn btn-sm btn-outline-secondary w-100">Tandai semua sebagai sudah dibaca</button>
                             </form>
                         </li>
                     </ul>
                 </div>
-                <span class="text-white me-3">Selamat datang, {{ Auth::user()->name }}</span>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+                <span class="text-white me-3">Selamat datang, <?php echo e(Auth::user()->name); ?></span>
+                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="btn btn-outline-light btn-sm">
                         <i class="bi bi-box-arrow-right"></i> Logout
                     </button>
@@ -228,51 +228,51 @@
 
     <div class="sidebar">
         <div class="sidebar-header">
-            @if(Auth::user()->profile_photo)
-                <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile Photo" class="profile-photo">
-            @else
-                <div class="profile-placeholder">{{ strtoupper(substr(Auth::user()->name,0,1)) }}</div>
-            @endif
+            <?php if(Auth::user()->profile_photo): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->profile_photo)); ?>" alt="Profile Photo" class="profile-photo">
+            <?php else: ?>
+                <div class="profile-placeholder"><?php echo e(strtoupper(substr(Auth::user()->name,0,1))); ?></div>
+            <?php endif; ?>
             <div>
                 <h5 class="fw-bold mb-1">OneSubmit</h5>
                 <p class="mb-0 opacity-75 small">Menu Dashboard</p>
             </div>
         </div>
-        <a href="{{ route('dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="<?php echo e(route('dashboard')); ?>"><i class="bi bi-speedometer2"></i> Dashboard</a>
 
-        @if(Auth::user()->role == 'mahasiswa')
-            <a href="{{ route('mahasiswa.proposal.create') }}"><i class="bi bi-send"></i> Ajukan Proposal</a>
-            <a href="{{ route('mahasiswa.status') }}"><i class="bi bi-envelope-paper"></i> Status Proposal</a>
-            <a href="{{ route('mahasiswa.layanan') }}"><i class="bi bi-file-earmark-text"></i> Layanan</a>
-        @endif
+        <?php if(Auth::user()->role == 'mahasiswa'): ?>
+            <a href="<?php echo e(route('mahasiswa.proposal.create')); ?>"><i class="bi bi-send"></i> Ajukan Proposal</a>
+            <a href="<?php echo e(route('mahasiswa.status')); ?>"><i class="bi bi-envelope-paper"></i> Status Proposal</a>
+            <a href="<?php echo e(route('mahasiswa.layanan')); ?>"><i class="bi bi-file-earmark-text"></i> Layanan</a>
+        <?php endif; ?>
 
-        @if(Auth::user()->role == 'admin')
-            <a href="{{ route('admin.dashboard') }}"><i class="bi bi-person-gear"></i> Kelola Data</a>
-        @endif
+        <?php if(Auth::user()->role == 'admin'): ?>
+            <a href="<?php echo e(route('admin.dashboard')); ?>"><i class="bi bi-person-gear"></i> Kelola Data</a>
+        <?php endif; ?>
 
-        @if(Auth::user()->role == 'ketua_jurusan')
-            @php
+        <?php if(Auth::user()->role == 'ketua_jurusan'): ?>
+            <?php
                 $sidebarService = app(\App\Services\SidebarService::class);
                 $badges = $sidebarService->getKetuaJurusanBadges();
-            @endphp
-            <a href="{{ route('jurusan.inbox.index') }}">
+            ?>
+            <a href="<?php echo e(route('jurusan.inbox.index')); ?>">
                 <i class="bi bi-inbox-fill"></i> Inbox Aksi Saya
-                @if($badges['inbox_total'] > 0)
-                    <span class="badge bg-danger rounded-pill float-end">{{ $badges['inbox_total'] }}</span>
-                @endif
+                <?php if($badges['inbox_total'] > 0): ?>
+                    <span class="badge bg-danger rounded-pill float-end"><?php echo e($badges['inbox_total']); ?></span>
+                <?php endif; ?>
             </a>
-            <a href="{{ route('jurusan.proposals.kjfd') }}"><i class="bi bi-file-earmark-check"></i> Daftar Proposal</a>
-        @endif
+            <a href="<?php echo e(route('jurusan.proposals.kjfd')); ?>"><i class="bi bi-file-earmark-check"></i> Daftar Proposal</a>
+        <?php endif; ?>
 
-        @if(Auth::user()->role == 'ketua_kjfd')
-            <a href="{{ route('kjfd.dashboard') }}"><i class="bi bi-clipboard2-check"></i> Validasi KJFD</a>
-        @endif
+        <?php if(Auth::user()->role == 'ketua_kjfd'): ?>
+            <a href="<?php echo e(route('kjfd.dashboard')); ?>"><i class="bi bi-clipboard2-check"></i> Validasi KJFD</a>
+        <?php endif; ?>
 
-        <a href="{{ route('profile.edit') }}"><i class="bi bi-person"></i> Profil</a>
+        <a href="<?php echo e(route('profile.edit')); ?>"><i class="bi bi-person"></i> Profil</a>
     </div>
 
     <div class="content">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </div>
 
     <!-- jQuery (required for DataTables) -->
@@ -303,4 +303,4 @@
         });
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\OneSubmit\resources\views/layouts/app.blade.php ENDPATH**/ ?>

@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register SidebarService as singleton for better performance
+        $this->app->singleton(\App\Services\SidebarService::class, function ($app) {
+            return new \App\Services\SidebarService();
+        });
     }
 
     /**

@@ -109,6 +109,7 @@
                         $biTotal = $biProposals->count();
                         $biApproved = $biProposals->where('status', 'disetujui')->count();
                         $biPending = $biProposals->whereIn('status', ['menunggu_verifikasi', 'menunggu_verifikasi_dosen_kjfd', 'revisi'])->count();
+                        $biRejected = $biProposals->where('status', 'ditolak')->count();
                     ?>
                     <div class="no-gutters align-items-center">
                         <div class="mb-3">
@@ -119,9 +120,13 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Disetujui</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($biApproved); ?></div>
                         </div>
-                        <div>
+                        <div class="mb-3">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Dalam Proses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($biPending); ?></div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ditolak</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($biRejected); ?></div>
                         </div>
                     </div>
                 </div>
@@ -145,6 +150,7 @@
                         $deTotal = $deProposals->count();
                         $deApproved = $deProposals->where('status', 'disetujui')->count();
                         $dePending = $deProposals->whereIn('status', ['menunggu_verifikasi', 'menunggu_verifikasi_dosen_kjfd', 'revisi'])->count();
+                        $deRejected = $deProposals->where('status', 'ditolak')->count();
                     ?>
                     <div class="no-gutters align-items-center">
                         <div class="mb-3">
@@ -155,9 +161,13 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Disetujui</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($deApproved); ?></div>
                         </div>
-                        <div>
+                        <div class="mb-3">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Dalam Proses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($dePending); ?></div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ditolak</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($deRejected); ?></div>
                         </div>
                     </div>
                 </div>
@@ -181,6 +191,7 @@
                         $imTotal = $imProposals->count();
                         $imApproved = $imProposals->where('status', 'disetujui')->count();
                         $imPending = $imProposals->whereIn('status', ['menunggu_verifikasi', 'menunggu_verifikasi_dosen_kjfd', 'revisi'])->count();
+                        $imRejected = $imProposals->where('status', 'ditolak')->count();
                     ?>
                     <div class="no-gutters align-items-center">
                         <div class="mb-3">
@@ -191,9 +202,13 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Disetujui</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($imApproved); ?></div>
                         </div>
-                        <div>
+                        <div class="mb-3">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Dalam Proses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($imPending); ?></div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ditolak</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($imRejected); ?></div>
                         </div>
                     </div>
                 </div>
@@ -217,6 +232,7 @@
                         $irTotal = $irProposals->count();
                         $irApproved = $irProposals->where('status', 'disetujui')->count();
                         $irPending = $irProposals->whereIn('status', ['menunggu_verifikasi', 'menunggu_verifikasi_dosen_kjfd', 'revisi'])->count();
+                        $irRejected = $irProposals->where('status', 'ditolak')->count();
                     ?>
                     <div class="no-gutters align-items-center">
                         <div class="mb-3">
@@ -227,9 +243,13 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Disetujui</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($irApproved); ?></div>
                         </div>
-                        <div>
+                        <div class="mb-3">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Dalam Proses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($irPending); ?></div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ditolak</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo e($irRejected); ?></div>
                         </div>
                     </div>
                 </div>

@@ -54,7 +54,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Menunggu Verifikasi
+                                Menunggu Verifikasi Admin
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['waiting_verification'] }}</div>
                         </div>
@@ -72,12 +72,12 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Perlu Revisi
+                                Menunggu Verif. KJFD
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['needs_revision'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['waiting_kjfd'] }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="bi bi-arrow-repeat fa-2x text-gray-300"></i>
+                            <i class="bi bi-person-check fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -90,12 +90,12 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Aging (>3 hari)
+                                Perlu Revisi
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['aging'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['needs_revision'] }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="bi bi-exclamation-triangle fa-2x text-gray-300"></i>
+                            <i class="bi bi-arrow-repeat fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -252,10 +252,11 @@
                                         </a>
 
                                         <!-- Kirim Notifikasi (ikon bel) -->
-                                        <form method="POST" action="{{ route('jurusan.inbox.notify', $proposal->id) }}"
-                                              onsubmit="return confirm('Kirim notifikasi ke role terkait untuk proposal ini?')">
+                                        <form method="POST" action="{{ route('jurusan.inbox.notify', $proposal->id) }}" id="notify-form-{{ $proposal->id }}">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-warning" title="Kirim notifikasi ke role terkait">
+                                            <button type="button" class="btn btn-sm btn-warning" 
+                                                    title="Kirim notifikasi ke role terkait"
+                                                    onclick="showNotifyModal({{ $proposal->id }}, '{{ addslashes($proposal->judul_proposal) }}')">
                                                 <i class="bi bi-bell"></i>
                                             </button>
                                         </form>
@@ -303,6 +304,48 @@
     </div>
 </div>
 
+<!-- Modal Konfirmasi Kirim Notifikasi -->
+<div class="modal fade" id="notifyModal" tabindex="-1" aria-labelledby="notifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-warning text-white border-0">
+                <h5 class="modal-title" id="notifyModalLabel">
+                    <i class="bi bi-bell-fill me-2"></i>Konfirmasi Kirim Notifikasi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-3">
+                    <div class="icon-wrapper mb-3">
+                        <i class="bi bi-send-check display-1 text-warning"></i>
+                    </div>
+                    <h6 class="fw-bold mb-3">Kirim Notifikasi ke Role Terkait?</h6>
+                    <p class="text-muted mb-2">Anda akan mengirim notifikasi untuk proposal:</p>
+                    <div class="alert alert-light border">
+                        <strong id="proposalTitle" class="text-primary"></strong>
+                    </div>
+                </div>
+                <div class="alert alert-info border-0 d-flex align-items-start">
+                    <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                    <div>
+                        <small>
+                            Notifikasi akan dikirim ke semua role yang relevan dengan proposal ini sesuai dengan bidang minat dan status proposal.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Batal
+                </button>
+                <button type="button" class="btn btn-warning" onclick="submitNotifyForm()">
+                    <i class="bi bi-send-fill me-1"></i>Ya, Kirim Notifikasi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Styles -->
 <style>
 .border-left-primary {
@@ -326,5 +369,64 @@
 .table-warning {
     background-color: #fff3cd !important;
 }
+
+/* Modal Styles */
+#notifyModal .modal-content {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#notifyModal .modal-header {
+    background: linear-gradient(135deg, #f6c23e 0%, #f4b619 100%);
+}
+
+#notifyModal .icon-wrapper {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+#notifyModal .btn-warning {
+    background: linear-gradient(135deg, #f6c23e 0%, #f4b619 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#notifyModal .btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(246, 194, 62, 0.4);
+}
+
+#notifyModal .btn-secondary {
+    transition: all 0.3s ease;
+}
+
+#notifyModal .btn-secondary:hover {
+    transform: translateY(-2px);
+}
 </style>
+
+<script>
+let currentProposalId = null;
+
+function showNotifyModal(proposalId, proposalTitle) {
+    currentProposalId = proposalId;
+    document.getElementById('proposalTitle').textContent = proposalTitle;
+    const modal = new bootstrap.Modal(document.getElementById('notifyModal'));
+    modal.show();
+}
+
+function submitNotifyForm() {
+    if (currentProposalId) {
+        document.getElementById('notify-form-' + currentProposalId).submit();
+    }
+}
+</script>
 @endsection

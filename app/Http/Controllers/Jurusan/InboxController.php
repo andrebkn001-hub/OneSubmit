@@ -65,6 +65,7 @@ class InboxController extends Controller
         $stats = [
             'total' => Proposal::needsKetuaAction()->count(),
             'waiting_verification' => Proposal::where('status', 'menunggu_verifikasi')->count(),
+            'waiting_kjfd' => Proposal::where('status', 'menunggu_verifikasi_dosen_kjfd')->count(),
             'needs_revision' => Proposal::where('status', 'revisi')->count(),
             'aging' => Proposal::needsKetuaAction()->aging(3)->count(),
         ];
@@ -121,13 +122,13 @@ class InboxController extends Controller
      */
     private function resolveRecipients(Proposal $proposal): array
     {
-        // Admin if waiting initial verification
+        // Status "menunggu_verifikasi" -> kirim ke Admin
         if ($proposal->status === 'menunggu_verifikasi') {
             $admins = User::where('role', 'admin')->get();
             return [$admins, 'admin'];
         }
 
-        // Dosen KJFD for KJFD statuses
+        // Status "menunggu_verifikasi_dosen_kjfd" atau "revisi" -> kirim ke Dosen KJFD sesuai bidang
         if (in_array($proposal->status, ['menunggu_verifikasi_dosen_kjfd', 'revisi'])) {
             // If specific dosen KJFD assigned, notify that person
             if ($proposal->dosen_kjfd_id) {
@@ -138,10 +139,11 @@ class InboxController extends Controller
             }
 
             // else, notify all dosen_kjfd in same bidang if possible
+            $bidangCode = $this->mapBidangToCode($proposal->bidang_minat);
             $byBidang = User::where('role', 'dosen_kjfd')
-                ->where(function ($q) use ($proposal) {
+                ->where(function ($q) use ($proposal, $bidangCode) {
                     $q->where('bidang', $proposal->bidang_minat)
-                      ->orWhere('bidang', $this->mapBidangToCode($proposal->bidang_minat))
+                      ->orWhere('bidang', $bidangCode)
                       ->orWhereNull('bidang');
                 })->get();
 

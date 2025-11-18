@@ -116,12 +116,13 @@ class Proposal extends Model
     }
 
     /**
-     * Scope: Proposals that need Ketua Jurusan action.
-     * Status: menunggu_verifikasi or revisi
+     * Scope: Proposals that need Ketua Jurusan monitoring/action.
+     * Status: menunggu_verifikasi, menunggu_verifikasi_dosen_kjfd, or revisi
+     * Ketua Jurusan berperan sebagai pengawas yang bisa mengirim notifikasi peringatan
      */
     public function scopeNeedsKetuaAction($query)
     {
-        return $query->whereIn('status', ['menunggu_verifikasi', 'revisi']);
+        return $query->whereIn('status', ['menunggu_verifikasi', 'menunggu_verifikasi_dosen_kjfd', 'revisi']);
     }
 
     /**

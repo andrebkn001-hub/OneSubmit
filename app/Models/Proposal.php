@@ -90,13 +90,14 @@ class Proposal extends Model
      */
     public function getStatusBadgeColor(): string
     {
+        // Return Bootstrap contextual color names for easier styling
         return match($this->status) {
-            'menunggu_verifikasi' => 'yellow',
-            'menunggu_verifikasi_dosen_kjfd' => 'blue',
-            'disetujui' => 'green',
-            'ditolak' => 'red',
-            'revisi' => 'orange',
-            default => 'gray',
+            'menunggu_verifikasi' => 'warning',
+            'menunggu_verifikasi_dosen_kjfd' => 'info',
+            'disetujui' => 'success',
+            'ditolak' => 'danger',
+            'revisi' => 'secondary',
+            default => 'secondary',
         };
     }
 

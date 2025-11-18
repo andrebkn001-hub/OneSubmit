@@ -27,16 +27,24 @@ class DosenKjfdProposalController extends Controller
     {
         $query = Proposal::where('dosen_kjfd_id', Auth::id());
 
-        // Filter berdasarkan status jika ada
-        if ($request->has('status') && !empty($request->status)) {
+        // Filter status
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
-        } else {
-            // Default: tampilkan yang perlu diverifikasi atau dalam proses
-            $query->whereIn('status', ['menunggu_verifikasi_dosen_kjfd', 'revisi']);
         }
 
-        if ($request->has('nim') && !empty($request->nim)) {
+        // Filter NIM
+        if ($request->filled('nim')) {
             $query->where('nim', 'like', '%' . $request->nim . '%');
+        }
+
+        // Filter nama mahasiswa
+        if ($request->filled('nama_lengkap')) {
+            $query->where('nama_lengkap', 'like', '%' . $request->nama_lengkap . '%');
+        }
+
+        // Filter judul proposal
+        if ($request->filled('judul')) {
+            $query->where('judul', 'like', '%' . $request->judul . '%');
         }
 
         $proposals = $query->latest()->get();
@@ -72,7 +80,13 @@ class DosenKjfdProposalController extends Controller
                 'acc_letter_path' => $accLetterPath
             ]);
 
-            return redirect()->back()->with('success', 'Proposal berhasil disetujui dan surat ACC telah dibuat.');
+            // Kirim notifikasi email ke mahasiswa
+            $mahasiswa = $proposal->user;
+            if ($mahasiswa && $mahasiswa->email) {
+                $mahasiswa->notify(new \App\Notifications\ProposalActionAlert($proposal, 'mahasiswa', Auth::user()));
+            }
+
+            return redirect()->back()->with('success', 'Proposal berhasil disetujui dan surat ACC telah dibuat. Notifikasi email telah dikirim ke mahasiswa.');
     } catch (\Exception $e) {
             // Catat error detail ke log untuk debugging
             Log::error('Error saat approve proposal id=' . $id . ' oleh dosen KJFD id=' . Auth::id() . ': ' . $e->getMessage(), [
@@ -107,7 +121,13 @@ class DosenKjfdProposalController extends Controller
                 'revision_message' => $validatedData['revision_message'],
             ]);
 
-            return redirect()->back()->with('success', 'Proposal berhasil direvisi. Pesan revisi telah dikirim ke mahasiswa.');
+            // Kirim notifikasi email ke mahasiswa
+            $mahasiswa = $proposal->user;
+            if ($mahasiswa && $mahasiswa->email) {
+                $mahasiswa->notify(new \App\Notifications\ProposalActionAlert($proposal, 'mahasiswa', Auth::user()));
+            }
+
+            return redirect()->back()->with('success', 'Proposal berhasil direvisi. Pesan revisi dan notifikasi email telah dikirim ke mahasiswa.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
@@ -136,7 +156,13 @@ class DosenKjfdProposalController extends Controller
                 'rejection_message' => $validatedData['rejection_message'],
             ]);
 
-            return redirect()->back()->with('error', 'Proposal berhasil ditolak dengan alasan: ' . $validatedData['rejection_message']);
+            // Kirim notifikasi email ke mahasiswa
+            $mahasiswa = $proposal->user;
+            if ($mahasiswa && $mahasiswa->email) {
+                $mahasiswa->notify(new \App\Notifications\ProposalActionAlert($proposal, 'mahasiswa', Auth::user()));
+            }
+
+            return redirect()->back()->with('error', 'Proposal berhasil ditolak dengan alasan: ' . $validatedData['rejection_message'] . ' Notifikasi email telah dikirim ke mahasiswa.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()

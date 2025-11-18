@@ -24,7 +24,7 @@
                     <div><strong>Nama Mahasiswa:</strong> {{ $proposal->nama_lengkap }}</div>
                     <div><strong>NIM:</strong> {{ $proposal->nim }}</div>
                     <div><strong>Bidang Minat:</strong> <span class="badge bg-secondary">{{ $proposal->bidang_minat }}</span></div>
-                    <div><strong>Status:</strong> <span class="badge bg-{{ $proposal->getStatusBadgeColor() }}">{{ $proposal->getStatusLabel() }}</span></div>
+                    <div><strong>Status:</strong> <span class="badge text-bg-{{ $proposal->getStatusBadgeColor() }}">{{ $proposal->getStatusLabel() }}</span></div>
                 </div>
                 <div class="col-md-6">
                     <div><strong>Diajukan:</strong> {{ $proposal->created_at->format('d M Y H:i') }} ({{ $proposal->created_at->diffForHumans() }})</div>

@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register - Sistem OneSubmit</title>
+    <link rel="icon" type="image/webp" href="{{ asset('images/unri22.webp') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/unri22.webp') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-sky-400 via-sky-500 to-sky-600 flex items-center justify-center p-4" style="background-image: url('{{ asset('images/hero-bg.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">

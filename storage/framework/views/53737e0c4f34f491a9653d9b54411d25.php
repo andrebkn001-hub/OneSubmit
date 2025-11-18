@@ -251,7 +251,7 @@
                                         <span class="badge bg-secondary"><?php echo e($proposal->bidang_minat); ?></span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-<?php echo e($proposal->getStatusBadgeColor()); ?>">
+                                        <span class="badge text-bg-<?php echo e($proposal->getStatusBadgeColor()); ?>">
                                             <?php echo e($proposal->getStatusLabel()); ?>
 
                                         </span>

@@ -246,7 +246,7 @@
                                         <span class="badge bg-secondary">{{ $proposal->bidang_minat }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-{{ $proposal->getStatusBadgeColor() }}">
+                                        <span class="badge text-bg-{{ $proposal->getStatusBadgeColor() }}">
                                             {{ $proposal->getStatusLabel() }}
                                         </span>
                                     </td>

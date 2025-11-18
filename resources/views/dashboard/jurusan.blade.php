@@ -321,7 +321,7 @@
                                 <div class="font-weight-bold text-gray-800">{{ $activity->user->name }}</div>
                                 <div class="small text-gray-600">{{ Str::limit($activity->judul, 50) }}</div>
                                 <div class="small">
-                                    <span class="badge badge-{{ $activity->getStatusBadgeColor() }}">
+                                    <span class="badge text-bg-{{ $activity->getStatusBadgeColor() }}">
                                         {{ $activity->getStatusLabel() }}
                                     </span>
                                     <span class="text-muted ml-2">
@@ -510,31 +510,7 @@
     flex-shrink: 0;
 }
 
-/* Badge colors */
-.badge-yellow {
-    background-color: #f6c23e;
-    color: #fff;
-}
-.badge-blue {
-    background-color: #36b9cc;
-    color: #fff;
-}
-.badge-green {
-    background-color: #1cc88a;
-    color: #fff;
-}
-.badge-red {
-    background-color: #e74a3b;
-    color: #fff;
-}
-.badge-orange {
-    background-color: #fd7e14;
-    color: #fff;
-}
-.badge-gray {
-    background-color: #858796;
-    color: #fff;
-}
+/* Removed custom badge-* colors; using Bootstrap contextual text-bg-* classes now */
 
 /* Gradient headers */
 .bg-gradient-danger {

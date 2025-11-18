@@ -371,7 +371,7 @@
                                                 </a>
                                             </td>
                                             <td>{{ $proposal->bidang_minat }}</td>
-                                            <td><span class="badge bg-{{ $proposal->getStatusBadgeColor() }}">{{ $proposal->getStatusLabel() }}</span></td>
+                                            <td><span class="badge text-bg-{{ $proposal->getStatusBadgeColor() }}">{{ $proposal->getStatusLabel() }}</span></td>
                                             <td>{{ $proposal->created_at->format('d M Y') }}</td>
                                         </tr>
                                     @endforeach
@@ -860,7 +860,7 @@ function loadQuickView(element) {
     document.getElementById('modalNama').textContent = element.getAttribute('data-nama');
     document.getElementById('modalJudul').textContent = element.getAttribute('data-judul');
     document.getElementById('modalBidang').textContent = element.getAttribute('data-bidang');
-    document.getElementById('modalStatus').innerHTML = '<span class="badge bg-primary">' + element.getAttribute('data-status') + '</span>';
+    document.getElementById('modalStatus').innerHTML = '<span class="badge text-bg-primary">' + element.getAttribute('data-status') + '</span>';
     document.getElementById('modalTanggal').textContent = element.getAttribute('data-tanggal');
     
     const proposalId = element.getAttribute('data-id');

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>OneSubmit - Dashboard Admin</title>
+    <link rel="icon" type="image/webp" href="<?php echo e(asset('images/unri22.webp')); ?>">
+    <link rel="apple-touch-icon" href="<?php echo e(asset('images/unri22.webp')); ?>">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

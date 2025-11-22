@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#1e90ff">
     <title>OneSubmit Dashboard</title>
     <link rel="icon" type="image/webp" href="<?php echo e(asset('images/unri22.webp')); ?>">
     <link rel="apple-touch-icon" href="<?php echo e(asset('images/unri22.webp')); ?>">
@@ -15,10 +16,15 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     
     <style>
+        * {
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+        }
+        
         body {
             overflow-x: hidden;
             background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
             background-attachment: fixed;
+            -webkit-overflow-scrolling: touch;
         }
         .sidebar {
             height: 100vh;
@@ -107,16 +113,31 @@
             z-index: 1000;
             background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e90ff 100%);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.75rem 1rem;
         }
         .navbar-brand {
             display: flex;
             align-items: center;
             font-weight: 700;
             font-size: 1.5rem;
+            color: white !important;
         }
         .navbar-brand img {
             height: 40px;
             margin-right: 10px;
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 0.5rem 0.75rem;
+            }
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            .navbar-brand img {
+                height: 28px;
+                margin-right: 6px;
+            }
         }
 
         /* Responsive Design */
@@ -124,9 +145,14 @@
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: relative;
+                position: fixed;
                 padding-top: 0;
                 display: none;
+                top: 60px; /* slightly larger for clearer separation */
+                max-height: calc(100vh - 60px);
+                overflow-y: auto;
+                z-index: 998;
+                -webkit-overflow-scrolling: touch;
             }
             .sidebar.show {
                 display: block;
@@ -134,12 +160,43 @@
             .content {
                 margin-left: 0;
                 width: 100%;
-                padding: 80px 15px 15px 15px;
+                padding: 76px 0 18px 0; /* increased top padding to avoid clipped header */
             }
             .navbar-toggler {
                 display: block;
             }
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            .navbar-brand img {
+                height: 28px;
+            }
+            .navbar {
+                padding: 0.55rem 0.8rem;
+            }
         }
+
+        @media (max-width: 576px) {
+            .content {
+                padding: 82px 0 14px 0; /* more top spacing on extra small devices */
+            }
+            .navbar {
+                padding: 0.45rem 0.65rem;
+            }
+            .navbar-brand {
+                font-size: 0.95rem;
+            }
+            .navbar-brand img {
+                height: 26px;
+                margin-right: 6px;
+            }
+        }
+        /* utility to ensure safe top offset if needed */
+        .safe-top { margin-top: 0; }
+        @media (max-width: 768px){ .safe-top { margin-top: 6px; } }
+        @media (max-width: 576px){ .safe-top { margin-top: 10px; } }
+        /* lock scroll when sidebar open */
+        body.lock-scroll { overflow: hidden; }
 
         @media (min-width: 769px) {
             .navbar-toggler {
@@ -172,6 +229,32 @@
         .btn-primary:hover {
             background: linear-gradient(135deg, #4682b4 0%, #1e90ff 50%, #4169e1 100%);
         }
+
+        /* Notification Dropdown Responsive */
+        .dropdown-menu {
+            min-width: 360px;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-menu {
+                min-width: 280px;
+                max-width: calc(100vw - 30px);
+                max-height: 350px;
+                font-size: 0.875rem;
+            }
+            .dropdown-item {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .dropdown-menu {
+                min-width: 250px;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -196,7 +279,7 @@
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php echo e($unread->count()); ?></span>
                         <?php endif; ?>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" style="min-width: 360px; max-height: 420px; overflow-y: auto;">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li class="dropdown-header fw-bold">Notifikasi</li>
                         <?php $__empty_1 = true; $__currentLoopData = $unread; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notif): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <li>
@@ -295,7 +378,9 @@
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
+            const body = document.body;
             sidebar.classList.toggle('show');
+            body.classList.toggle('lock-scroll', sidebar.classList.contains('show'));
         }
 
         // Close sidebar when clicking outside on mobile

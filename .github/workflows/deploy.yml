@@ -23,8 +23,24 @@ jobs:
           cd /var/www/onesubmit
           git reset --hard
           git pull origin main
+          
+          # 1. Pastikan folder cache SELALU ADA (Anti Error 500)
+          mkdir -p storage/framework/cache/data
+          mkdir -p storage/framework/sessions
+          mkdir -p storage/framework/views
+          
+          # 2. Pastikan izinnya TERBUKA (777) agar Laravel bisa nulis log
+          chmod -R 777 storage
+          
+          # 3. Install Library & Update Database
           composer install --no-dev --optimize-autoloader
           php artisan migrate --force
+          
+          # 4. Bersihkan Cache lama
           php artisan optimize:clear
-          php artisan storage:link
+          
+          # 5. Link Storage (Pakai "|| true" agar tidak error kalau link sudah ada)
+          php artisan storage:link || true
+          
+          # 6. Restart Worker
           php artisan queue:restart

@@ -270,6 +270,7 @@
 
     
     <?php echo $__env->yieldPushContent('scripts'); ?>
+    <script src="<?php echo e(asset('js/form-validation.js')); ?>"></script>
 </body>
 </html>
 <?php /**PATH C:\laragon\www\OneSubmit\resources\views/layouts/admin.blade.php ENDPATH**/ ?>

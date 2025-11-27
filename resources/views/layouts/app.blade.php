@@ -392,5 +392,6 @@
             }
         });
     </script>
+    <script src="{{ asset('js/form-validation.js') }}"></script>
 </body>
 </html>

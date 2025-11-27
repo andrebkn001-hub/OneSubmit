@@ -112,14 +112,16 @@
             <!-- Email Address -->
             <div class="mb-3">
                 <label for="email" class="form-label">Alamat Email</label>
-                <input type="email" 
-                       class="form-control @error('email') is-invalid @enderror" 
-                       id="email" 
-                       name="email" 
-                       value="{{ old('email') }}" 
-                       required 
-                       autofocus
-                       placeholder="nama@example.com">
+                  <input type="email" 
+                      class="form-control @error('email') is-invalid @enderror" 
+                      id="email" 
+                      name="email" 
+                      value="{{ old('email') }}" 
+                      required 
+                      autofocus
+                      placeholder="nama@example.com"
+                      oninvalid="this.setCustomValidity(this.validity.valueMissing ? 'Email wajib diisi.' : 'Masukkan alamat email yang valid.')"
+                      oninput="this.setCustomValidity('')">
                 @error('email')
                     <div class="invalid-feedback">
                         {{ $message }}

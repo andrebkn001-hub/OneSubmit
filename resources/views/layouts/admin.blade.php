@@ -269,5 +269,6 @@
 
     {{-- Page-specific scripts injected here --}}
     @stack('scripts')
+    <script src="{{ asset('js/form-validation.js') }}"></script>
 </body>
 </html>

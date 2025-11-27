@@ -56,7 +56,9 @@
         <div class="mb-3">
             <label for="email" class="form-label">{{ __('Email') }}</label>
             {{-- Ganti <x-text-input> dengan <input class="form-control"> --}}
-            <input id="email" name="email" type="email" class="form-control" value="{{ old('email', $user->email) }}" required autocomplete="username" />
+                 <input id="email" name="email" type="email" class="form-control" value="{{ old('email', $user->email) }}" required autocomplete="username"
+                     oninvalid="this.setCustomValidity(this.validity.valueMissing ? 'Email wajib diisi.' : 'Masukkan alamat email yang valid.')"
+                     oninput="this.setCustomValidity('')" />
             @error('email')
                 <div class="text-danger mt-1">{{ $message }}</div>
             @enderror

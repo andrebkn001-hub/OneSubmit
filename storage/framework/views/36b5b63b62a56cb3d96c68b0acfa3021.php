@@ -43,8 +43,8 @@
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                     Alamat Email
                 </label>
-                <input id="email" type="email"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 <?php $__errorArgs = ['email'];
+                  <input id="email" type="email"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -52,7 +52,9 @@ $message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($messag
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                       name="email" value="<?php echo e(old('email')); ?>" required autofocus placeholder="Masukkan alamat email">
+                      name="email" value="<?php echo e(old('email')); ?>" required autofocus placeholder="Masukkan alamat email"
+                      oninvalid="this.setCustomValidity(this.validity.valueMissing ? 'Email wajib diisi.' : 'Masukkan alamat email yang valid.')"
+                      oninput="this.setCustomValidity('')">
                 <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

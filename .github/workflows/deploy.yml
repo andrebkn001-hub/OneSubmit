@@ -21,26 +21,27 @@ jobs:
         port: 22
         script: |
           cd /var/www/onesubmit
+          
+          # 1. Reset Kode ke Versi GitHub Terbaru (Anti Konflik)
           git reset --hard
           git pull origin main
           
-          # 1. Pastikan folder cache SELALU ADA (Anti Error 500)
+          # 2. Infrastructure as Code: Pastikan folder vital SELALU ada
+          # Robot akan membuatnya otomatis jika hilang/terhapus
           mkdir -p storage/framework/cache/data
           mkdir -p storage/framework/sessions
           mkdir -p storage/framework/views
+          mkdir -p storage/logs
           
-          # 2. Pastikan izinnya TERBUKA (777) agar Laravel bisa nulis log
-          chmod -R 777 storage
+          # 3. Maintenance Permission (Menjaga agar tetap 775 - Aman)
+          # Karena robot login sebagai 'andree' (pemilik), dia bisa menjalankan chmod ini
+          chmod -R 775 storage bootstrap/cache
           
-          # 3. Install Library & Update Database
+          # 4. Standard Deployment Laravel
           composer install --no-dev --optimize-autoloader
           php artisan migrate --force
-          
-          # 4. Bersihkan Cache lama
           php artisan optimize:clear
           
-          # 5. Link Storage (Pakai "|| true" agar tidak error kalau link sudah ada)
+          # 5. Link Storage & Restart Queue
           php artisan storage:link || true
-          
-          # 6. Restart Worker
           php artisan queue:restart
